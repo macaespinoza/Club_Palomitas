@@ -1,12 +1,8 @@
-{{!-- src/views/buscar.handlebars --}}
-{{!-- Vista de búsqueda de películas (acceso desde el dashboard) --}}
-
 <div class="container py-4">
     <h2 class="display-5 mb-4 text-center">
         <i class="bi bi-search text-info me-2"></i>Buscar Películas
     </h2>
 
-    {{!-- Mostrar mensaje si el usuario escribe una búsqueda --}}
     {{#if query}}
     <p class="text-muted text-center">
         Resultados para: <strong>{{query}}</strong>
@@ -25,19 +21,16 @@
         </div>
     </form>
 
-    {{!-- Contenedor donde el frontend (app.js) renderizará los resultados de la API --}}
     <div id="resultados" class="mt-5"></div>
 </div>
 
 <style>
-    /* POSTERS - ALTURA FIJA */
     .movie-card .card-img-top {
         height: 300px;
         object-fit: cover;
         object-position: center;
     }
 
-    /* TÍTULO DE PELÍCULA - ALTURA FIJA 2 LÍNEAS */
     .card-title-container {
         color: var(--ink-black, #081f21);
         font-size: 1.8rem;
@@ -58,7 +51,6 @@
         word-break: break-word;
     }
 
-    /* BADGE TIPO PELÍCULA - COLOR AQUA */
     .badge-tipo {
         background-color: var(--pearl-aqua, #69dadc);
         color: var(--ink-black, #081f21);
@@ -70,18 +62,15 @@
         display: inline-block;
     }
 
-    /* COLOR INK-BLACK PARA TEXTOS */
     .text-ink-black {
         color: var(--ink-black, #081f21);
     }
 
-    /* SEPARADOR ENTRE CONTENIDO SUPERIOR E INFERIOR */
     .card-separator {
         border-top: 2px dashed rgba(8, 31, 33, 0.2);
         width: 100%;
     }
 
-    /* BOTONES DE ACCIÓN EN CARDS - COMPACTO */
     .btn-card-action {
         background-color: var(--ink-black, #081f21) !important;
         color: var(--azure-mist, #eefbfb) !important;
@@ -105,7 +94,6 @@
         font-size: 0.9rem;
     }
 
-    /* POPOVER CUSTOM STYLING */
     .popover {
         background-color: var(--ink-black, #081f21);
         border: 2px solid var(--royal-gold, #fae04c);

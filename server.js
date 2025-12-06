@@ -5,23 +5,20 @@ const cookieParser = require('cookie-parser')
 const { engine } = require('express-handlebars')
 const PUERTO = process.env.PORT || 8080
 
-// Importar rutas API
 const rutasAuth = require('./src/routes/auth')
 const rutasListas = require('./src/routes/listas')
 const rutasPeliculas = require('./src/routes/peliculas')
 
-// Importar modelos con asociaciones (esto sincroniza las relaciones)
 const { sequelize, Lista, Pelicula } = require('./src/models/associations')
 
 const app = express()
 
-// Configurar Handlebars como motor de vistas
+// CONFIGURACION HANDLEBARS
 app.engine('handlebars', engine({
     defaultLayout: 'main',
     layoutsDir: path.join(__dirname, 'src/views/layouts'),
     partialsDir: path.join(__dirname, 'src/views/partials'),
     helpers: {
-        // Helper para generar rango de números
         range: (start, end) => {
             const result = []
             for (let i = start; i < end; i++) {
@@ -29,7 +26,6 @@ app.engine('handlebars', engine({
             }
             return result
         },
-        // Helper para comparar valores
         lte: (a, b) => a <= b,
         eq: (a, b) => a === b,
         or: (a, b) => a || b
@@ -38,26 +34,23 @@ app.engine('handlebars', engine({
 app.set('view engine', 'handlebars')
 app.set('views', path.join(__dirname, 'src/views'))
 
-// Middlewares básicos
+// MIDDLEWARES
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(cookieParser())
 
-// Middleware de autenticación JWT
+// AUTENTICACION JWT
 const { usuarioActual } = require('./src/middlewares/auth')
 app.use(usuarioActual)
 
-// Middleware para pasar usuario a todas las vistas (req.auth -> req.usuario)
 app.use((req, res, next) => {
     req.usuario = req.auth || null
     res.locals.usuario = req.usuario
     next()
 })
 
-// ===================== RUTAS DE VISTAS =====================
-
-// Página principal - redirige a login si no está autenticado
+// RUTAS DE VISTAS
 app.get('/', (req, res) => {
     if (req.usuario) {
         res.redirect('/dashboard')
@@ -66,7 +59,6 @@ app.get('/', (req, res) => {
     }
 })
 
-// Dashboard principal (requiere autenticación)
 app.get('/dashboard', async (req, res) => {
     if (!req.usuario) {
         return res.redirect('/auth/login')
@@ -77,7 +69,6 @@ app.get('/dashboard', async (req, res) => {
     })
 })
 
-// Rutas de autenticación (vistas)
 app.get('/auth/login', (req, res) => {
     if (req.usuario) {
         return res.redirect('/dashboard')
@@ -92,13 +83,11 @@ app.get('/auth/register', (req, res) => {
     res.render('auth/register', { titulo: 'Registrarse' })
 })
 
-// Logout desde navegador
 app.get('/auth/logout', (req, res) => {
     res.clearCookie('token')
     res.redirect('/auth/login')
 })
 
-// Ruta de búsqueda de películas (vista)
 app.get('/buscar', (req, res) => {
     const query = req.query.q || ''
     res.render('buscar', {
@@ -108,7 +97,6 @@ app.get('/buscar', (req, res) => {
     })
 })
 
-// Ruta para ver todas las listas del usuario (vista)
 app.get('/listas', (req, res) => {
     if (!req.usuario) {
         return res.redirect('/auth/login')
@@ -119,7 +107,6 @@ app.get('/listas', (req, res) => {
     })
 })
 
-// Ruta para crear nueva lista (vista)
 app.get('/listas/nueva', (req, res) => {
     if (!req.usuario) {
         return res.redirect('/auth/login')
@@ -130,16 +117,13 @@ app.get('/listas/nueva', (req, res) => {
     })
 })
 
-// Ruta para ver detalle de lista (vista)
-// Ruta para ver detalle de lista (vista)
 app.get('/listas/:id', async (req, res) => {
     if (!req.usuario) {
         return res.redirect('/auth/login')
     }
     try {
-        const { Calificacion, Comentario } = require('./src/models/associations') // Ensure these are imported or available
+        const { Calificacion, Comentario } = require('./src/models/associations')
 
-        // Simplificado: obtener lista con sus películas
         const lista = await Lista.findByPk(req.params.id, {
             include: [{
                 model: Pelicula,
@@ -168,10 +152,8 @@ app.get('/listas/:id', async (req, res) => {
             })
         }
 
-        // Convertir a objeto plano simple
         const listaPlain = lista.get({ plain: true })
 
-        // Aplanar calificaciones y comentarios
         if (listaPlain.peliculas) {
             listaPlain.peliculas = listaPlain.peliculas.map(p => {
                 const calif = p.calificaciones && p.calificaciones.length > 0 ? p.calificaciones[0].puntuacion : null
@@ -188,22 +170,20 @@ app.get('/listas/:id', async (req, res) => {
             titulo: listaPlain.nombre,
             lista: listaPlain,
             usuario: req.usuario,
-            // Simple check de propiedad
             esPropietario: lista.usuario_id === req.usuario.id
         })
     } catch (error) {
-        console.error('SERVER ERROR LOG:', error); // Ensuring this logs to terminal
+        console.error('ERROR:', error)
         res.status(500).render('error', { mensaje: 'Error al cargar la lista. Intenta nuevamente.' })
     }
 
 })
 
-// ===================== RUTAS DE LA API =====================
+// RUTAS API
 app.use('/api/auth', rutasAuth)
 app.use('/api/listas', rutasListas)
 app.use('/api/peliculas', rutasPeliculas)
 
-// Ruta API info
 app.get('/api', (req, res) => {
     res.json({
         nombre: 'API de Listas de Películas',
@@ -242,7 +222,7 @@ app.get('/api', (req, res) => {
     })
 })
 
-// Manejo de rutas no encontradas
+// 404
 app.use((req, res) => {
     res.status(404).render('error', {
         titulo: 'Página no encontrada',
@@ -250,12 +230,11 @@ app.use((req, res) => {
     })
 })
 
-// Manejo global de errores
+// MANEJO DE ERRORES
 app.use((err, req, res, next) => {
     console.error('Error:', err.message)
     console.error(err.stack)
 
-    // Errores de JWT
     if (err.name === 'UnauthorizedError') {
         return res.status(401).json({
             exito: false,
@@ -263,7 +242,6 @@ app.use((err, req, res, next) => {
         })
     }
 
-    // Errores de validación de Sequelize
     if (err.name === 'SequelizeValidationError') {
         return res.status(400).json({
             exito: false,
@@ -272,7 +250,6 @@ app.use((err, req, res, next) => {
         })
     }
 
-    // Errores de constraint único
     if (err.name === 'SequelizeUniqueConstraintError') {
         return res.status(409).json({
             exito: false,
@@ -281,7 +258,6 @@ app.use((err, req, res, next) => {
         })
     }
 
-    // Error genérico
     res.status(500).json({
         exito: false,
         error: process.env.NODE_ENV === 'production'
@@ -290,16 +266,16 @@ app.use((err, req, res, next) => {
     })
 })
 
-// Sincronizar base de datos e iniciar servidor (tablas ya creadas en PostgreSQL)
+// INICIAR SERVIDOR
 sequelize.sync()
     .then(() => {
-        console.log('Base de datos sincronizada correctamente')
+        console.log('Base de datos sincronizada')
         app.listen(PUERTO, () => {
             console.log(`Servidor corriendo en http://localhost:${PUERTO}`)
-            console.log(`Documentación de API disponible en http://localhost:${PUERTO}/api`)
+            console.log(`API disponible en http://localhost:${PUERTO}/api`)
         })
     })
     .catch(err => {
-        console.error('Error al conectar con la base de datos:', err)
+        console.error('Error de conexión:', err)
         process.exit(1)
     })

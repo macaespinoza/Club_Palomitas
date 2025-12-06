@@ -2,15 +2,11 @@ const { Usuario } = require('../models/associations')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
-/**
- * POST /api/auth/registro
- * Registrar un nuevo usuario
- */
+// REGISTRO
 exports.registro = async (req, res, next) => {
     try {
         const { nombre_usuario, email, contrasena } = req.body
 
-        // Validación de campos requeridos
         if (!nombre_usuario || !email || !contrasena) {
             return res.status(400).json({
                 exito: false,
@@ -18,7 +14,6 @@ exports.registro = async (req, res, next) => {
             })
         }
 
-        // Validar longitud de contraseña
         if (contrasena.length < 6) {
             return res.status(400).json({
                 exito: false,
@@ -26,7 +21,6 @@ exports.registro = async (req, res, next) => {
             })
         }
 
-        // Verificar si el email ya existe
         const existeEmail = await Usuario.findOne({ where: { email } })
         if (existeEmail) {
             return res.status(409).json({
@@ -35,7 +29,6 @@ exports.registro = async (req, res, next) => {
             })
         }
 
-        // Verificar si el nombre de usuario ya existe
         const existeNombreUsuario = await Usuario.findOne({ where: { nombre_usuario } })
         if (existeNombreUsuario) {
             return res.status(409).json({
@@ -44,10 +37,8 @@ exports.registro = async (req, res, next) => {
             })
         }
 
-        // Hash de la contraseña
         const hash = await bcrypt.hash(contrasena, 12)
 
-        // Crear usuario
         const usuario = await Usuario.create({
             nombre_usuario,
             email,
@@ -55,7 +46,6 @@ exports.registro = async (req, res, next) => {
             rol: 'usuario'
         })
 
-        // Generar token JWT
         const token = generarToken(usuario)
 
         return res.status(201).json({
@@ -71,10 +61,7 @@ exports.registro = async (req, res, next) => {
     }
 }
 
-/**
- * POST /api/auth/login
- * Iniciar sesión
- */
+// LOGIN
 exports.login = async (req, res, next) => {
     try {
         const { email, contrasena } = req.body
@@ -104,12 +91,11 @@ exports.login = async (req, res, next) => {
 
         const token = generarToken(usuario)
 
-        // También establecer cookie para uso en navegador
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
-            maxAge: 24 * 60 * 60 * 1000 // 24 horas
+            maxAge: 24 * 60 * 60 * 1000
         })
 
         return res.json({
@@ -125,10 +111,7 @@ exports.login = async (req, res, next) => {
     }
 }
 
-/**
- * POST /api/auth/logout
- * Cerrar sesión
- */
+// LOGOUT
 exports.logout = (req, res) => {
     res.clearCookie('token')
     return res.json({
@@ -137,10 +120,7 @@ exports.logout = (req, res) => {
     })
 }
 
-/**
- * GET /api/auth/perfil
- * Obtener perfil del usuario autenticado
- */
+// OBTENER PERFIL
 exports.obtenerPerfil = async (req, res, next) => {
     try {
         const usuario = await Usuario.findByPk(req.auth.id)
@@ -161,10 +141,7 @@ exports.obtenerPerfil = async (req, res, next) => {
     }
 }
 
-/**
- * PUT /api/auth/perfil
- * Actualizar perfil del usuario autenticado
- */
+// ACTUALIZAR PERFIL
 exports.actualizarPerfil = async (req, res, next) => {
     try {
         const { nombre_usuario, avatar_url } = req.body
@@ -177,7 +154,6 @@ exports.actualizarPerfil = async (req, res, next) => {
             })
         }
 
-        // Verificar si el nuevo nombre de usuario ya existe
         if (nombre_usuario && nombre_usuario !== usuario.nombre_usuario) {
             const existeNombreUsuario = await Usuario.findOne({ where: { nombre_usuario } })
             if (existeNombreUsuario) {
@@ -203,10 +179,7 @@ exports.actualizarPerfil = async (req, res, next) => {
     }
 }
 
-/**
- * PUT /api/auth/contrasena
- * Cambiar contraseña
- */
+// CAMBIAR CONTRASEÑA
 exports.cambiarContrasena = async (req, res, next) => {
     try {
         const { contrasena_actual, contrasena_nueva } = req.body
@@ -247,7 +220,7 @@ exports.cambiarContrasena = async (req, res, next) => {
     }
 }
 
-// Funciones auxiliares
+// FUNCIONES AUXILIARES
 function generarToken(usuario) {
     return jwt.sign(
         {

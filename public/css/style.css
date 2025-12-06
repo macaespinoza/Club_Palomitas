@@ -1,6 +1,6 @@
-/* ===================== CLUB PALOMITAS STYLES ===================== */
+/* CLUB PALOMITAS - ESTILOS PRINCIPALES */
 
-/* Variables */
+/* VARIABLES */
 :root {
     --ink-black: #081f21;
     --pearl-aqua: #69dadc;
@@ -8,7 +8,6 @@
     --hot-pink-web: #f471b5;
     --royal-gold: #fae04c;
 
-    /* Mappings */
     --bg-primary: var(--ink-black);
     --text-primary: var(--ink-black);
     --accent-main: var(--pearl-aqua);
@@ -16,7 +15,7 @@
     --accent-highlight: var(--royal-gold);
 }
 
-/* Base */
+/* BASE */
 body {
     min-height: 100vh;
     display: flex;
@@ -46,7 +45,7 @@ a {
     text-decoration: none;
 }
 
-/* Cards */
+/* CARDS */
 .card {
     background-color: var(--hot-pink-web);
     border: 3px solid var(--royal-gold);
@@ -81,7 +80,7 @@ a {
     color: rgba(8, 31, 33, 0.7) !important;
 }
 
-/* Form inputs */
+/* FORMULARIOS */
 .form-control,
 .form-select {
     background-color: var(--azure-mist);
@@ -104,8 +103,7 @@ a {
     color: rgba(8, 31, 33, 0.5);
 }
 
-
-/* Custom Add Button - Large Icon Style */
+/* BOTON AGREGAR PELICULA */
 .btn-add-movie {
     width: 64px;
     height: 64px;
@@ -136,7 +134,7 @@ a {
     fill: var(--hot-pink-web);
 }
 
-/* Dark Card Variant (Containers: Search, Popular Movies Global Container) */
+/* CARD OSCURA */
 .card-dark {
     background-color: var(--ink-black) !important;
     border: 3px solid var(--royal-gold) !important;
@@ -159,8 +157,7 @@ a {
     font-size: 1.5rem;
 }
 
-
-/* Search Card Styling (Specific for the search bar container) */
+/* CARD BUSQUEDA */
 .search-card {
     background-color: var(--ink-black) !important;
     color: var(--azure-mist) !important;
@@ -178,8 +175,6 @@ a {
 
 }
 
-
-
 input[type="text"] {
     background-color: var(--royal-gold);
     color: var(--ink-black);
@@ -188,7 +183,7 @@ input[type="text"] {
     font-size: 1.5rem;
 }
 
-/* Ratings */
+/* CALIFICACIONES */
 .rating {
     display: inline-flex;
     align-items: center;
@@ -201,8 +196,7 @@ input[type="text"] {
     box-shadow: 2px 2px 0px var(--ink-black);
 }
 
-/* Custom Icons (SVGs) */
-/* Custom Icons (SVGs) */
+/* ICONOS SVG */
 .custom-icon {
     width: 24px;
     height: 24px;
@@ -212,7 +206,6 @@ input[type="text"] {
     vertical-align: middle;
 }
 
-/* Base SVG Icon Class */
 .svg-icon {
     width: 24px;
     height: 24px;
@@ -230,13 +223,12 @@ input[type="text"] {
     filter: drop-shadow(0 0 5px rgba(244, 113, 181, 0.5));
 }
 
-/* Dashboard Large Icons */
+/* ICONOS DASHBOARD */
 .dashboard-icon-large {
     width: 64px;
     height: 64px;
     margin-bottom: 1rem;
     fill: var(--ink-black);
-    /* Default to ink black as requested */
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), fill 0.3s ease;
 }
 
@@ -245,7 +237,6 @@ input[type="text"] {
     height: 64px;
     margin-bottom: 1rem;
     fill: var(--ink-black);
-    /* Default to ink black as requested */
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), fill 0.3s ease;
 }
 
@@ -255,7 +246,7 @@ input[type="text"] {
     filter: drop-shadow(3px 3px 0px var(--azure-mist));
 }
 
-/* Button Icons */
+/* ICONOS EN BOTONES */
 .btn .svg-icon {
     width: 20px;
     height: 20px;
@@ -266,7 +257,7 @@ input[type="text"] {
     transform: scale(1.2);
 }
 
-/* Navbar */
+/* NAVBAR */
 .navbar {
     background-color: var(--royal-gold) !important;
     border-bottom: 3px solid var(--ink-black);
@@ -296,7 +287,7 @@ input[type="text"] {
     text-shadow: 1px 1px 0px var(--ink-black);
 }
 
-/* Buttons */
+/* BOTONES */
 .btn {
     border-radius: 15px;
     padding: 0.5rem 1.5rem;
@@ -364,7 +355,7 @@ input[type="text"] {
 
 }
 
-/* Alerts */
+/* ALERTAS */
 .alert {
     border: 2px solid var(--ink-black);
     border-radius: 15px;
@@ -374,14 +365,14 @@ input[type="text"] {
     font-weight: 600;
 }
 
-/* Search results grid */
+/* GRID RESULTADOS */
 .search-results {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 2rem;
 }
 
-/* Lista item */
+/* ITEM LISTA */
 .lista-item {
     background: var(--hot-pink-web);
     border: 2px solid var(--ink-black);
@@ -394,7 +385,7 @@ input[type="text"] {
     background: #e85aa5;
 }
 
-/* Footer */
+/* FOOTER */
 footer {
     background: var(--royal-gold) !important;
     border-top: 3px solid var(--ink-black) !important;
@@ -402,7 +393,7 @@ footer {
     font-weight: 700;
 }
 
-/* Animations */
+/* ANIMACIONES */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -419,7 +410,7 @@ footer {
     animation: fadeIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-/* Responsive */
+/* RESPONSIVE */
 @media (max-width: 768px) {
     .search-results {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
