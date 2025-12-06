@@ -1,0 +1,369 @@
+{{!-- src/views/listas/detalle.handlebars --}}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5">{{lista.nombre}}</h1>
+            {{#if lista.descripcion}}
+            <p class="text-muted lead">{{lista.descripcion}}</p>
+            {{/if}}
+            <span class="badge {{#if lista.es_publica}}bg-success{{else}}bg-secondary{{/if}}">
+                {{#if lista.es_publica}}Pública{{else}}Privada{{/if}}
+            </span>
+        </div>
+        {{#if esPropietario}}
+        <button class="btn btn-danger" onclick="eliminarLista({{lista.id}})">
+            <i class="bi bi-trash me-1"></i>Eliminar Lista
+        </button>
+        {{/if}}
+    </div>
+
+    {{#if esPropietario}}
+    <!-- Buscador de películas integrado -->
+    <div class="card bg-secondary border-0 shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="card-title">
+                <i class="bi bi-search text-info me-2"></i>Buscar y Agregar Películas
+            </h5>
+            <form id="buscarForm" class="row g-3">
+                <div class="col-md-9">
+                    <input type="text" id="buscarInput" class="form-control bg-dark text-light border-secondary"
+                        placeholder="Buscar películas en OMDb..." required>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-info w-100">
+                        <i class="bi bi-search me-1"></i>Buscar
+                    </button>
+                </div>
+            </form>
+            <div id="resultadosBusqueda" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3 mt-2"></div>
+        </div>
+    </div>
+    {{/if}}
+
+    <h3 class="mb-3">Películas en esta lista</h3>
+    {{#if lista.peliculas.length}}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
+        {{#each lista.peliculas}}
+        <div class="col">
+            <div class="card h-100 bg-dark border-secondary shadow-sm">
+                <img src="{{this.poster}}" class="card-img-top" alt="{{this.titulo}}"
+                    onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'"
+                    style="height: 200px; object-fit: cover;">
+                <div class="card-body d-flex flex-column">
+                    <h6 class="card-title text-light">{{this.titulo}}</h6>
+                    <p class="card-text small text-muted">{{this.anio}}</p>
+
+
+
+                    {{#if this.mi_calificacion}}
+                    <div class="mb-2">
+                        <div class="stars-display">
+                            {{#each (range 1 6)}}
+                            <i
+                                class="bi bi-star{{#if (lte this ../this.mi_calificacion)}}-fill text-warning{{/if}}"></i>
+                            {{/each}}
+                        </div>
+                    </div>
+                    {{/if}}
+
+                    {{#if this.mi_comentario}}
+                    <p class="card-text small fst-italic text-light">"{{this.mi_comentario}}"</p>
+                    {{/if}}
+
+                    <div class="mt-auto d-flex justify-content-between align-items-center pt-2">
+                        <span class="badge bg-info text-dark">{{this.tipo}}</span>
+                        {{#if ../esPropietario}}
+                        <div>
+
+                            <button class="btn btn-sm btn-outline-warning me-1 btn-review" data-id="{{this.id}}"
+                                data-titulo="{{this.titulo}}" data-calificacion="{{this.mi_calificacion}}"
+                                data-comentario="{{this.mi_comentario}}">
+                                <i class="bi bi-star"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-info me-1 btn-review" data-id="{{this.id}}"
+                                data-titulo="{{this.titulo}}" data-calificacion="{{this.mi_calificacion}}"
+                                data-comentario="{{this.mi_comentario}}">
+                                <i class="bi bi-chat-text"></i>
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger"
+                                onclick="removerPelicula({{../lista.id}}, {{this.id}})">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                        {{/if}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="text-center py-5">
+        <i class="bi bi-film display-1 text-muted mb-3"></i>
+        <p class="lead text-muted">Esta lista está vacía. Usa el buscador arriba para agregar películas.</p>
+    </div>
+    {{/if}}
+</div>
+
+<!-- Modal para agregar review -->
+
+
+<!-- Modal para agregar review -->
+<div class="modal fade" id="modalReview" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="modalReviewTitle">Agregar Review</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formReview">
+                    <input type="hidden" id="reviewPeliculaId">
+                    <div class="mb-3">
+                        <label class="form-label">Calificación</label>
+                        <div class="stars-rating" id="starsRating">
+                            <i class="bi bi-star" data-rating="1"></i>
+                            <i class="bi bi-star" data-rating="2"></i>
+                            <i class="bi bi-star" data-rating="3"></i>
+                            <i class="bi bi-star" data-rating="4"></i>
+                            <i class="bi bi-star" data-rating="5"></i>
+                        </div>
+                        <input type="hidden" id="calificacion" name="calificacion">
+                    </div>
+                    <div class="mb-3">
+                        <label for="comentario" class="form-label">Comentario</label>
+                        <textarea class="form-control bg-secondary text-light border-dark" id="comentario"
+                            name="comentario" rows="3" placeholder="¿Por qué te gusta esta película?"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="guardarReview()">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .stars-rating i {
+        font-size: 2rem;
+        color: #6c757d;
+        cursor: pointer;
+        transition: color 0.2s;
+    }
+
+    .stars-rating i:hover,
+    .stars-rating i.active {
+        color: #ffc107;
+    }
+
+    .stars-display i {
+        font-size: 1rem;
+        color: #6c757d;
+    }
+
+    .stars-display i.bi-star-fill {
+        color: #ffc107;
+    }
+</style>
+
+<script>
+    const listaId = {{ lista.id }};
+
+    // Buscar películas
+    document.getElementById('buscarForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const query = document.getElementById('buscarInput').value;
+        const resultados = document.getElementById('resultadosBusqueda');
+
+        resultados.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-info" role="status"></div></div>';
+
+        try {
+            const res = await fetch(`/api/peliculas/buscar?q=${encodeURIComponent(query)}`, {
+                credentials: 'same-origin'
+            });
+            const data = await res.json();
+
+            if (data.exito && data.datos.length > 0) {
+                resultados.innerHTML = data.datos.map(pelicula => `
+                    <div class="col">
+                        <div class="card h-100 bg-dark border-secondary">
+                            <img src="${pelicula.poster}" class="card-img-top" alt="${pelicula.titulo}"
+                                style="height: 150px; object-fit: cover;"
+                                onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
+                            <div class="card-body d-flex flex-column">
+                                <h6 class="card-title text-light">${pelicula.titulo}</h6>
+                                <p class="card-text small text-muted">${pelicula.anio}</p>
+                                <button class="btn btn-sm btn-success mt-auto"
+                                    onclick="agregarPeliculaALista('${pelicula.imdb_id}', '${pelicula.titulo.replace(/'/g, "\\'")}')">
+                                    <i class="bi bi-plus-circle me-1"></i>Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                resultados.innerHTML = '<div class="col-12 text-center text-muted">No se encontraron resultados</div>';
+            }
+        } catch (error) {
+            console.error(error);
+            resultados.innerHTML = '<div class="col-12 text-center text-danger">Error al buscar películas</div>';
+        }
+    });
+
+    // Agregar película a la lista
+    async function agregarPeliculaALista(imdbId, titulo) {
+        try {
+            const res = await fetch('/api/peliculas/agregar-a-lista', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    imdb_id: imdbId,
+                    lista_id: listaId
+                })
+            });
+            const data = await res.json();
+
+            if (data.exito) {
+                alert(`"${titulo}" agregada a la lista`);
+                location.reload();
+            } else {
+                alert(data.error || 'Error al agregar película');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error de conexión');
+        }
+    }
+
+    // Event Listener Delegado para botones de review (para soportar caracteres especiales en titulos)
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.btn-review');
+        if (btn) {
+            const id = btn.dataset.id;
+            const titulo = btn.dataset.titulo;
+            const calificacion = btn.dataset.calificacion;
+            const comentario = btn.dataset.comentario;
+            mostrarModalReview(id, titulo, calificacion, comentario);
+        }
+    });
+
+    // Mostrar modal de review
+    function mostrarModalReview(peliculaId, titulo, calificacion, comentario) {
+        document.getElementById('reviewPeliculaId').value = peliculaId;
+        document.getElementById('modalReviewTitle').textContent = `Review: ${titulo}`;
+        document.getElementById('calificacion').value = calificacion || '';
+        document.getElementById('comentario').value = comentario || '';
+
+        // Actualizar estrellas
+        const stars = document.querySelectorAll('#starsRating i');
+        stars.forEach((star, index) => {
+            if (index < (calificacion || 0)) {
+                star.classList.remove('bi-star');
+                star.classList.add('bi-star-fill', 'active');
+            } else {
+                star.classList.remove('bi-star-fill', 'active');
+                star.classList.add('bi-star');
+            }
+        });
+
+        const modal = new bootstrap.Modal(document.getElementById('modalReview'));
+        modal.show();
+    }
+
+    // Sistema de estrellas
+    document.querySelectorAll('#starsRating i').forEach(star => {
+        star.addEventListener('click', function () {
+            const rating = parseInt(this.getAttribute('data-rating'));
+            document.getElementById('calificacion').value = rating;
+
+            document.querySelectorAll('#starsRating i').forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.remove('bi-star');
+                    s.classList.add('bi-star-fill', 'active');
+                } else {
+                    s.classList.remove('bi-star-fill', 'active');
+                    s.classList.add('bi-star');
+                }
+            });
+        });
+    });
+
+    // Guardar review
+    async function guardarReview() {
+        const peliculaId = document.getElementById('reviewPeliculaId').value;
+        const calificacion = document.getElementById('calificacion').value;
+        const comentario = document.getElementById('comentario').value;
+
+        if (!calificacion) {
+            alert('Por favor selecciona una calificación');
+            return;
+        }
+
+        try {
+            // New Endpoint for Global Review
+            const res = await fetch(`/api/peliculas/${peliculaId}/review`, {
+                method: 'POST', // Changed from PUT to POST as defined in router
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    calificacion: parseInt(calificacion),
+                    comentario: comentario.trim()
+                })
+            });
+            const data = await res.json();
+
+            if (data.exito) {
+                location.reload();
+            } else {
+                alert(data.error || 'Error al guardar review');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error de conexión');
+        }
+    }
+
+
+    async function eliminarLista(id) {
+        if (!confirm('¿Estás seguro de que quieres eliminar esta lista permanentemente?')) return;
+
+        try {
+            const res = await fetch(`/api/listas/${id}`, {
+                method: 'DELETE',
+                credentials: 'same-origin'
+            });
+            const data = await res.json();
+            if (data.exito) {
+                window.location.href = '/dashboard';
+            } else {
+                alert(data.error || 'Error al eliminar');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Error de conexión');
+        }
+    }
+
+    async function removerPelicula(listaId, peliculaId) {
+        if (!confirm('¿Quitar película de la lista?')) return;
+
+        try {
+            const res = await fetch(`/api/listas/${listaId}/peliculas/${peliculaId}`, {
+                method: 'DELETE',
+                credentials: 'same-origin'
+            });
+            const data = await res.json();
+            if (data.exito) {
+                location.reload();
+            } else {
+                alert(data.error || 'Error al remover película');
+            }
+        } catch (e) {
+            console.error(e);
+            alert('Error de conexión');
+        }
+    }
+</script>

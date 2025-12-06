@@ -1,0 +1,18 @@
+{{!-- src/views/listas/nueva.handlebars --}}
+{{!-- Formulario para crear una nueva lista de películas --}}
+<div class="container py-4">
+    <h2 class="display-5 mb-4 text-center">
+        <i class="bi bi-plus-circle text-success me-2"></i>Crear Nueva Lista
+    </h2>
+    <form id="crearListaForm" class="row g-3 justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <input type="text" name="nombre" class="form-control bg-dark text-light border-secondary"
+                placeholder="Nombre de la lista" required>
+        </div>
+        <div class="col-md-4 col-lg-3">
+            <button type="submit" class="btn btn-success w-100">
+                <i class="bi bi-plus me-1"></i>Crear
+            </button>
+        </div>
+    </form>
+</div>

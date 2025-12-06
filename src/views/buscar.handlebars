@@ -1,0 +1,30 @@
+{{!-- src/views/buscar.handlebars --}}
+{{!-- Vista de búsqueda de películas (acceso desde el dashboard) --}}
+
+<div class="container py-4">
+    <h2 class="display-5 mb-4 text-center">
+        <i class="bi bi-search text-info me-2"></i>Buscar Películas
+    </h2>
+
+    {{!-- Mostrar mensaje si el usuario escribe una búsqueda --}}
+    {{#if query}}
+    <p class="text-muted text-center">
+        Resultados para: <strong>{{query}}</strong>
+    </p>
+    {{/if}}
+
+    <form action="/buscar" method="GET" class="row g-3 justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <input type="text" name="q" class="form-control bg-dark text-light border-secondary"
+                placeholder="Escribe el nombre de una película..." value="{{query}}" required>
+        </div>
+        <div class="col-md-2 col-lg-2">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-search me-1"></i>Buscar
+            </button>
+        </div>
+    </form>
+
+    {{!-- Contenedor donde el frontend (app.js) renderizará los resultados de la API --}}
+    <div id="resultados" class="mt-5"></div>
+</div>

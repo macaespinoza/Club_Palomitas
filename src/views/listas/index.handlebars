@@ -1,0 +1,119 @@
+{{!-- src/views/listas/index.handlebars --}}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5">
+            <i class="bi bi-collection text-warning me-2"></i>Mis Listas
+        </h1>
+        <a href="/listas/nueva" class="btn btn-success">
+            <i class="bi bi-plus-circle me-1"></i>Nueva Lista
+        </a>
+    </div>
+
+    <div id="listasContainer">
+        <div class="text-center py-5">
+            <div class="spinner-border text-info" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', async () => {
+    const container = document.getElementById('listasContainer');
+
+    try {
+        const res = await fetch('/api/listas', { credentials: 'same-origin' });
+        const data = await res.json();
+
+        if (data.exito && data.datos.length > 0) {
+            container.innerHTML = `
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    ${data.datos.map(lista => `
+                        <div class="col">
+                            <div class="card h-100 bg-dark border-secondary shadow-sm">
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title text-light">
+                                        <i class="bi bi-collection-fill text-warning me-2"></i>${lista.nombre}
+                                    </h5>
+                                    ${lista.descripcion ? `<p class="card-text text-muted">${lista.descripcion}</p>` : ''}
+
+                                    <div class="mb-3">
+                                        <span class="badge ${lista.es_publica ? 'bg-success' : 'bg-secondary'}">
+                                            ${lista.es_publica ? 'Pública' : 'Privada'}
+                                        </span>
+                                        <span class="badge bg-info text-dark">
+                                            <i class="bi bi-film"></i> ${lista.cantidad_peliculas} películas
+                                        </span>
+                                    </div>
+
+                                    ${lista.peliculas && lista.peliculas.length > 0 ? `
+                                        <div class="mb-3">
+                                            <div class="d-flex flex-wrap gap-1">
+                                                ${lista.peliculas.slice(0, 4).map(pelicula => `
+                                                    <img src="${pelicula.poster}"
+                                                        alt="${pelicula.titulo}"
+                                                        class="rounded"
+                                                        style="width: 50px; height: 75px; object-fit: cover;"
+                                                        onerror="this.src='https://via.placeholder.com/50x75?text=?'">
+                                                `).join('')}
+                                            </div>
+                                        </div>
+                                    ` : '<p class="text-muted small fst-italic">Lista vacía</p>'}
+
+                                    <div class="mt-auto d-flex gap-2">
+                                        <a href="/listas/${lista.id}" class="btn btn-primary flex-grow-1">
+                                            <i class="bi bi-eye me-1"></i>Ver
+                                        </a>
+                                        <button class="btn btn-outline-danger" onclick="eliminarLista(${lista.id}, '${lista.nombre.replace(/'/g, "\\'")}')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else {
+            container.innerHTML = `
+                <div class="text-center py-5">
+                    <i class="bi bi-collection display-1 text-muted mb-3"></i>
+                    <p class="lead text-muted">No tienes listas creadas aún</p>
+                    <a href="/listas/nueva" class="btn btn-success">
+                        <i class="bi bi-plus-circle me-1"></i>Crear mi primera lista
+                    </a>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error(error);
+        container.innerHTML = `
+            <div class="alert alert-danger" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>Error al cargar las listas
+            </div>
+        `;
+    }
+});
+
+async function eliminarLista(id, nombre) {
+    if (!confirm(`¿Estás seguro de eliminar la lista "${nombre}"?`)) return;
+
+    try {
+        const res = await fetch(`/api/listas/${id}`, {
+            method: 'DELETE',
+            credentials: 'same-origin'
+        });
+        const data = await res.json();
+
+        if (data.exito) {
+            location.reload();
+        } else {
+            alert(data.error || 'Error al eliminar la lista');
+        }
+    } catch (error) {
+        console.error(error);
+        alert('Error de conexión');
+    }
+}
+</script>

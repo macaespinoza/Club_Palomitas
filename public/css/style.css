@@ -1,0 +1,349 @@
+/* ===================== CLUB PALOMITAS STYLES ===================== */
+
+/* Variables */
+:root {
+    --ink-black: #081f21;
+    --pearl-aqua: #69dadc;
+    --azure-mist: #eefbfb;
+    --hot-pink-web: #f471b5;
+    --royal-gold: #fae04c;
+
+    /* Mappings */
+    --bg-primary: var(--ink-black);
+    --text-primary: var(--ink-black);
+    /* Changed to dark for better contrast on light fields */
+    --accent-main: var(--pearl-aqua);
+    --accent-secondary: var(--hot-pink-web);
+    --accent-highlight: var(--royal-gold);
+}
+
+/* Base */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: url('../img/fondo01.jpg') no-repeat center center fixed;
+    background-size: cover;
+    color: var(--text-primary);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Overlay removed as requested */
+
+main {
+    flex: 1;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--royal-gold);
+    font-weight: 800;
+    text-shadow: 2px 2px 0px var(--ink-black);
+    /* Pop effect */
+}
+
+a {
+    text-decoration: none;
+}
+
+/* Cards */
+.card {
+    background-color: var(--hot-pink-web);
+    /* Hot pink background as requested */
+    border: 3px solid var(--royal-gold);
+    border-radius: 20px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    box-shadow: 5px 5px 0px var(--ink-black);
+    /* Comic/Pop style shadow */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 10px 10px 0px var(--ink-black) !important;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    color: var(--ink-black);
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.card-text {
+    color: var(--ink-black);
+    font-weight: 600;
+}
+
+.text-muted {
+    color: rgba(8, 31, 33, 0.7) !important;
+}
+
+/* Form inputs */
+.form-control,
+.form-select {
+    background-color: var(--azure-mist);
+    border: 2px solid var(--ink-black);
+    color: var(--ink-black);
+    border-radius: 15px;
+    padding: 0.75rem 1.25rem;
+    font-weight: 600;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #fff;
+    border-color: var(--royal-gold);
+    box-shadow: 0 0 0 0.25rem rgba(250, 224, 76, 0.5);
+    color: var(--ink-black);
+}
+
+.form-control::placeholder {
+    color: rgba(8, 31, 33, 0.5);
+}
+
+/* Movie cards */
+.movie-card {
+    background: transparent;
+    border: none;
+    border-radius: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.movie-card:hover {
+    transform: scale(1.03);
+    z-index: 10;
+    box-shadow: 0 15px 40px rgba(250, 224, 76, 0.4);
+}
+
+.movie-card img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 20px;
+    border: 2px solid var(--ink-black);
+}
+
+.movie-card .card-body {
+    background: linear-gradient(to top, var(--hot-pink-web) 0%, rgba(244, 113, 181, 0.95) 90%, transparent 100%);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem;
+    padding-top: 3rem;
+    color: var(--ink-black);
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+/* Ratings */
+.rating {
+    display: inline-flex;
+    align-items: center;
+    background: var(--royal-gold);
+    padding: 0.3rem 0.8rem;
+    border-radius: 12px;
+    font-weight: bold;
+    color: var(--ink-black);
+    border: 2px solid var(--ink-black);
+    box-shadow: 2px 2px 0px var(--ink-black);
+}
+
+/* Custom Icons (SVGs) */
+.custom-icon {
+    width: 32px;
+    /* Slightly larger */
+    height: 32px;
+    margin-right: 8px;
+    transition: transform 0.2s ease;
+    /* Filter to match Ink Black #081f21 */
+    filter: brightness(0) saturate(100%) invert(8%) sepia(21%) saturate(961%) hue-rotate(134deg) brightness(96%) contrast(98%);
+}
+
+.nav-link:hover .custom-icon {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--royal-gold) !important;
+    border-bottom: 3px solid var(--ink-black);
+    padding: 0.8rem 0;
+    box-shadow: 0 4px 0px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+    font-size: 2rem;
+    color: var(--ink-black) !important;
+    font-weight: 900;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 2px 2px 0px #fff;
+}
+
+.nav-link {
+    color: var(--ink-black) !important;
+    font-weight: 700;
+    margin: 0 0.5rem;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+}
+
+.nav-link:hover {
+    color: var(--hot-pink-web) !important;
+    text-shadow: 1px 1px 0px var(--ink-black);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 15px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    border: 2px solid var(--ink-black);
+    box-shadow: 2px 2px 0px var(--ink-black);
+}
+
+.btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0px var(--ink-black);
+}
+
+.btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px var(--ink-black);
+}
+
+.btn-primary {
+    background-color: var(--pearl-aqua);
+    color: var(--ink-black);
+}
+
+.btn-primary:hover {
+    background-color: #5bc8ca;
+    color: var(--ink-black);
+}
+
+.btn-outline-primary {
+    background-color: transparent;
+    color: var(--pearl-aqua);
+    border-color: var(--pearl-aqua);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--pearl-aqua);
+    color: var(--ink-black);
+}
+
+.btn-success {
+    background-color: var(--royal-gold);
+    color: var(--ink-black);
+}
+
+.btn-info {
+    background-color: var(--pearl-aqua);
+    color: var(--ink-black);
+}
+
+.btn-warning {
+    background-color: var(--royal-gold);
+    color: var(--ink-black);
+}
+
+/* Alerts */
+.alert {
+    border: 2px solid var(--ink-black);
+    border-radius: 15px;
+    background-color: var(--azure-mist);
+    color: var(--ink-black);
+    box-shadow: 3px 3px 0px var(--ink-black);
+    font-weight: 600;
+}
+
+/* Search results grid */
+.search-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 2rem;
+}
+
+/* Lista item */
+.lista-item {
+    background: var(--hot-pink-web);
+    border: 2px solid var(--ink-black);
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 3px 3px 0px var(--ink-black);
+}
+
+.lista-item:hover {
+    background: #e85aa5;
+}
+
+/* Footer */
+footer {
+    background: var(--royal-gold) !important;
+    border-top: 3px solid var(--ink-black) !important;
+    color: var(--ink-black) !important;
+    font-weight: 700;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+/* Dark Card Variant */
+.card-dark {
+    background-color: var(--ink-black) !important;
+    border: 2px solid var(--pearl-aqua);
+    box-shadow: 5px 5px 0px var(--pearl-aqua);
+}
+
+.card-dark:hover {
+    box-shadow: 10px 10px 0px var(--pearl-aqua) !important;
+}
+
+.card-dark .card-title,
+.card-dark .card-text,
+.card-dark h5,
+.card-dark i {
+    color: var(--azure-mist) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .search-results {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    }
+
+    .movie-card img {
+        height: 250px;
+    }
+}

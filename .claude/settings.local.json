@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(dir:*)",
+      "Bash(del /q srcmodelsBicicleta.js srcmodelsReview.js srcmodelsCompra.js srcmodelsCompraBicicleta.js srccontrollersbicicletasController.js srccontrollerscomprasController.js srccontrollersreviewsController.js srcroutesbicicletas.js srcroutescompras.js srcroutesreviews.js)",
+      "Bash(ren:*)",
+      "Bash(move List.js Lista.js)",
+      "Bash(move:*)",
+      "Bash(cmd /c \"cd /d \"\"C:\\Users\\Ale\\Desktop\\BOOTCAMP JAVASCRIPT\\TRABAJOS\\M09\\M09 - Evaluacion de Portafolio\\src\\models\"\" && ren List.js Lista.js && ren Movie.js Pelicula.js && ren ListMovie.js ListaPelicula.js\")",
+      "Bash(cmd /c \"cd /d \"\"C:\\Users\\Ale\\Desktop\\BOOTCAMP JAVASCRIPT\\TRABAJOS\\M09\\M09 - Evaluacion de Portafolio\\src\\controllers\"\" && ren listsController.js listasController.js && ren moviesController.js peliculasController.js\")",
+      "Bash(cmd /c \"cd /d \"\"C:\\Users\\Ale\\Desktop\\BOOTCAMP JAVASCRIPT\\TRABAJOS\\M09\\M09 - Evaluacion de Portafolio\\src\\routes\"\" && ren lists.js listas.js && ren movies.js peliculas.js\")",
+      "Bash(cmd /c \"cd /d \"\"C:\\Users\\Ale\\Desktop\\BOOTCAMP JAVASCRIPT\\TRABAJOS\\M09\\M09 - Evaluacion de Portafolio\\src\\services\"\" && ren omdbService.js servicioOMDb.js\")",
+      "Bash(del:*)",
+      "Bash(cmd /c:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
