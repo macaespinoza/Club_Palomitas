@@ -178,12 +178,20 @@ function renderResultados(peliculas) {
         return `
         <div class="col-md-4 mb-4">
             <div class="card movie-card h-100">
-                <img src="${poster}" class="card-img-top" alt="${p.titulo}">
+                <img src="${poster}" class="card-img-top" alt="${p.titulo}" onerror="this.src='/img/no-image.png'">
                 <div class="card-body">
-                    <h5 class="card-title">${p.titulo}</h5>
-                    <p class="card-text"><strong>Año:</strong> ${p.anio || 'N/D'}</p>
-                    <p class="card-text"><strong>Tipo:</strong> ${p.tipo || 'N/D'}</p>
-                    <a href="/peliculas/${p.imdb_id}" class="btn btn-primary btn-sm">Ver detalle</a>
+                    <div>
+                        <h5 class="card-title" title="${p.titulo}">${p.titulo}</h5>
+                        <p class="card-text small mb-2">
+                             ${p.anio || 'N/D'}
+                        </p>
+                    </div>
+                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                         <span class="badge bg-secondary border border-light">${p.tipo || 'N/D'}</span>
+                         <a href="/peliculas/${p.imdb_id}" class="btn btn-primary btn-sm rounded-pill px-3">
+                            <i class="bi bi-eye me-1"></i>Ver detalle
+                         </a>
+                    </div>
                 </div>
             </div>
         </div>`

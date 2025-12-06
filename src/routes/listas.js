@@ -18,6 +18,6 @@ enrutador.delete('/:id', listasController.eliminar)
 // Gestión de películas en listas
 enrutador.post('/:id/peliculas', listasController.agregarPelicula)
 enrutador.delete('/:id/peliculas/:peliculaId', listasController.removerPelicula)
-enrutador.put('/:id/peliculas/:peliculaId/review', listasController.actualizarReview)
+
 
 module.exports = enrutador

@@ -1,4 +1,4 @@
-const { Lista, Pelicula, ListaPelicula, Usuario } = require('../models/associations')
+const { Lista, Pelicula, ListaPelicula, Usuario, Calificacion, Comentario } = require('../models/associations')
 
 /**
  * GET /api/listas
@@ -80,7 +80,19 @@ exports.obtenerUna = async (req, res, next) => {
                 },
                 {
                     model: Pelicula,
-                    as: 'peliculas'
+                    as: 'peliculas',
+                    include: [
+                        {
+                            model: Calificacion,
+                            as: 'calificaciones',
+                            required: false
+                        },
+                        {
+                            model: Comentario,
+                            as: 'comentarios',
+                            required: false
+                        }
+                    ]
                 }
             ]
         })
@@ -93,7 +105,8 @@ exports.obtenerUna = async (req, res, next) => {
         }
 
         // Verificar acceso: debe ser pública o pertenecer al usuario
-        if (!lista.es_publica && lista.usuario_id !== req.auth?.id) {
+        // Convertimos req.auth.id a entero para asegurar comparación correcta
+        if (!lista.es_publica && lista.usuario_id !== (req.auth?.id ? parseInt(req.auth.id) : null)) {
             return res.status(403).json({
                 exito: false,
                 error: 'No tienes permiso para ver esta lista'
@@ -159,7 +172,7 @@ exports.actualizar = async (req, res, next) => {
         }
 
         // Solo el propietario puede editar
-        if (lista.usuario_id !== req.auth.id) {
+        if (lista.usuario_id !== parseInt(req.auth.id)) {
             return res.status(403).json({
                 exito: false,
                 error: 'No tienes permiso para editar esta lista'
@@ -198,7 +211,7 @@ exports.eliminar = async (req, res, next) => {
         }
 
         // Solo el propietario puede eliminar
-        if (lista.usuario_id !== req.auth.id) {
+        if (lista.usuario_id !== parseInt(req.auth.id)) {
             return res.status(403).json({
                 exito: false,
                 error: 'No tienes permiso para eliminar esta lista'
@@ -234,7 +247,7 @@ exports.agregarPelicula = async (req, res, next) => {
         }
 
         // Solo el propietario puede agregar películas
-        if (lista.usuario_id !== req.auth.id) {
+        if (lista.usuario_id !== parseInt(req.auth.id)) {
             return res.status(403).json({
                 exito: false,
                 error: 'No tienes permiso para modificar esta lista'
@@ -296,7 +309,7 @@ exports.removerPelicula = async (req, res, next) => {
         }
 
         // Solo el propietario puede remover películas
-        if (lista.usuario_id !== req.auth.id) {
+        if (lista.usuario_id !== parseInt(req.auth.id)) {
             return res.status(403).json({
                 exito: false,
                 error: 'No tienes permiso para modificar esta lista'
@@ -317,67 +330,6 @@ exports.removerPelicula = async (req, res, next) => {
         return res.json({
             exito: true,
             mensaje: 'Película removida de la lista exitosamente'
-        })
-    } catch (error) {
-        next(error)
-    }
-}
-
-/**
- * PUT /api/listas/:id/peliculas/:peliculaId/review
- * Actualizar review (calificación y comentario) de una película en una lista
- */
-exports.actualizarReview = async (req, res, next) => {
-    try {
-        const { id, peliculaId } = req.params
-        const { calificacion, comentario } = req.body
-
-        const lista = await Lista.findByPk(id)
-
-        if (!lista) {
-            return res.status(404).json({
-                exito: false,
-                error: 'Lista no encontrada'
-            })
-        }
-
-        // Solo el propietario puede actualizar reviews
-        if (lista.usuario_id !== req.auth.id) {
-            return res.status(403).json({
-                exito: false,
-                error: 'No tienes permiso para modificar esta lista'
-            })
-        }
-
-        // Validar calificación
-        if (calificacion && (calificacion < 1 || calificacion > 5)) {
-            return res.status(400).json({
-                exito: false,
-                error: 'La calificación debe estar entre 1 y 5'
-            })
-        }
-
-        // Buscar la película en la lista
-        const listaPelicula = await ListaPelicula.findOne({
-            where: { lista_id: id, pelicula_id: peliculaId }
-        })
-
-        if (!listaPelicula) {
-            return res.status(404).json({
-                exito: false,
-                error: 'La película no está en esta lista'
-            })
-        }
-
-        // Actualizar review
-        await listaPelicula.update({
-            calificacion: calificacion || null,
-            comentario: comentario?.trim() || null
-        })
-
-        return res.json({
-            exito: true,
-            mensaje: 'Review actualizado exitosamente'
         })
     } catch (error) {
         next(error)
@@ -405,19 +357,43 @@ function formatearLista(lista) {
     }
 
     if (lista.peliculas) {
-        formateado.peliculas = lista.peliculas.map(pelicula => ({
-            id: pelicula.id,
-            imdb_id: pelicula.imdb_id,
-            titulo: pelicula.titulo,
-            anio: pelicula.anio,
-            poster: pelicula.poster,
-            puntuacion_imdb: pelicula.puntuacion_imdb,
-            tipo: pelicula.tipo,
-            agregado_en: pelicula.ListaPelicula?.agregado_en,
-            notas: pelicula.ListaPelicula?.notas,
-            calificacion: pelicula.ListaPelicula?.calificacion,
-            comentario: pelicula.ListaPelicula?.comentario
-        }))
+        formateado.peliculas = lista.peliculas.map(pelicula => {
+            // Encontrar la calificación y comentario del propietario de la lista si existen
+            // Si estuviéramos viendo la lista como otro usuario, aquí podríamos filtrar por req.auth.id
+            // pero para la vista de detalle de lista, generalmente queremos ver la opinión del creador de la lista
+            // o mi propia opinión.
+            // Asumiremos que 'mi_calificacion' se refiere a la calificación del usuario DUEÑO de la lista
+            // ya que estamos viendo SU lista.
+
+            let miCalificacion = null;
+            let miComentario = null;
+
+            if (pelicula.calificaciones && pelicula.calificaciones.length > 0) {
+                // Buscamos la calificación del dueño de la lista
+                const calif = pelicula.calificaciones.find(c => c.usuario_id === lista.usuario_id);
+                if (calif) miCalificacion = calif.puntuacion;
+            }
+
+            if (pelicula.comentarios && pelicula.comentarios.length > 0) {
+                // Buscamos el comentario del dueño de la lista
+                const coment = pelicula.comentarios.find(c => c.usuario_id === lista.usuario_id);
+                if (coment) miComentario = coment.contenido;
+            }
+
+            return {
+                id: pelicula.id,
+                imdb_id: pelicula.imdb_id,
+                titulo: pelicula.titulo,
+                anio: pelicula.anio,
+                poster: pelicula.poster,
+                puntuacion_imdb: pelicula.puntuacion_imdb,
+                tipo: pelicula.tipo,
+                agregado_en: pelicula.ListaPelicula?.agregado_en,
+                notas: pelicula.ListaPelicula?.notas,
+                mi_calificacion: miCalificacion,
+                mi_comentario: miComentario
+            }
+        })
     }
 
     return formateado

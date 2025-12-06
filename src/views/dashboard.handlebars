@@ -1,9 +1,16 @@
-<div class="mb-4">
+<div class="mb-4 text-center">
     <h1 class="display-5">
-        <i class="bi bi-house-door text-primary me-2"></i>
-        Bienvenido, {{usuario.nombre_usuario}}
+        <svg class="dashboard-icon-home" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"
+            style="width: 1em; height: 1em; vertical-align: -0.125em;">
+            <g transform="translate(0,512) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+                <path
+                    d="M2394 4925 c-76 -16 -167 -53 -242 -96 -43 -25 -314 -290 -1079 -1054 -1134 -1131 -1067 -1057 -1068 -1195 0 -91 26 -149 95 -214 87 -81 218 -98 325 -43 38 20 285 261 1035 1012 555 555 1001 995 1022 1006 21 10 56 19 78 19 22 0 57 -9 78 -19 21 -11 467 -451 1022 -1006 750 -751 997 -992 1035 -1012 107 -55 238 -38 325 43 67 63 95 123 95 209 0 135 9 123 -446 580 l-409 411 0 451 c0 299 -4 470 -11 505 -30 138 -142 228 -284 228 -118 0 -214 -61 -267 -169 -21 -42 -23 -62 -26 -234 l-4 -189 -321 319 c-330 326 -368 358 -497 410 -130 52 -319 68 -456 38z" />
+                <path
+                    d="M2510 3789 c-30 -12 -1765 -1742 -1786 -1781 -12 -23 -14 -133 -14 -692 0 -441 4 -683 11 -718 29 -139 140 -289 265 -355 119 -63 121 -63 631 -63 l463 0 0 650 0 650 480 0 480 0 0 -650 0 -650 463 0 c510 0 512 0 631 63 125 66 236 216 265 355 7 35 11 277 11 718 0 559 -2 669 -14 692 -23 42 -1757 1770 -1789 1782 -34 12 -64 12 -97 -1z" />
+            </g>
+        </svg>
+        Bienvenid@ {{usuario.nombre_usuario}}
     </h1>
-    <p class="text-muted">Gestiona tus listas de películas favoritas</p>
 </div>
 
 <div class="row g-4 mb-5">
@@ -11,12 +18,29 @@
     <div class="col-md-6 col-lg-4">
         <div class="card h-100">
             <div class="card-body text-center p-4">
-                <img src="/img/buscar-peliculas.svg" alt="Buscar" class="custom-icon mb-3"
-                    style="width: 64px; height: 64px;">
+                <svg class="dashboard-icon-large" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <g transform="translate(0,512) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+                        <path
+                            d="M691 4895 c-103 -19 -208 -73 -289 -150 -77 -72 -122 -142 -160 -247 l-27 -73 0 -890 c0 -978 -2 -937 63 -1075 48 -103 157 -212 262 -264 133 -65 155 -67 949 -64 l705 3 36 95 c77 205 187 376 340 529 329 330 788 488 1240 426 156 -21 287 -59 448 -132 11 -4 12 121 9 678 -3 754 -1 720 -68 859 -46 93 -160 205 -259 254 -139 68 -73 65 -1705 65 -1185 -1 -1484 -3 -1544 -14z m1526 -754 c698 -349 726 -365 753 -436 30 -80 3 -185 -62 -240 -18 -15 -331 -176 -695 -359 -655 -327 -664 -331 -723 -330 -82 1 -144 39 -182 113 l-28 53 0 678 c0 479 3 687 11 711 19 56 59 100 113 125 99 46 66 59 813 -315z" />
+                        <path
+                            d="M1710 3630 c0 -159 3 -290 8 -289 4 0 135 65 292 143 l285 144 -293 146 -292 146 0 -290z" />
+                        <path
+                            d="M3493 2980 c-489 -52 -911 -384 -1077 -848 -94 -264 -94 -573 1 -846 63 -181 148 -319 283 -460 247 -258 568 -396 924 -396 207 0 386 40 557 125 l86 42 129 -148 c71 -81 133 -148 137 -148 8 -1 317 269 317 276 0 2 -54 66 -121 141 -66 75 -123 142 -125 148 -3 6 20 44 51 85 69 92 144 236 183 354 83 249 83 554 1 800 -162 484 -583 823 -1090 875 -111 11 -148 11 -256 0z m303 -439 c415 -86 706 -463 680 -881 -7 -119 -28 -202 -77 -308 -127 -275 -382 -459 -681 -492 -256 -29 -505 59 -692 244 -165 163 -249 367 -249 606 1 129 17 212 64 325 156 375 558 588 955 506z" />
+                    </g>
+                </svg>
                 <h5 class="card-title">Buscar Películas</h5>
                 <p class="card-text">Encuentra películas en OMDb y agrégalas a tus listas</p>
                 <a href="/buscar" class="btn btn-info">
-                    <img src="/img/buscar-peliculas.svg" class="custom-icon" style="width: 20px; height: 20px;">Buscar
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <g transform="translate(0,512) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+                            <path
+                                d="M691 4895 c-103 -19 -208 -73 -289 -150 -77 -72 -122 -142 -160 -247 l-27 -73 0 -890 c0 -978 -2 -937 63 -1075 48 -103 157 -212 262 -264 133 -65 155 -67 949 -64 l705 3 36 95 c77 205 187 376 340 529 329 330 788 488 1240 426 156 -21 287 -59 448 -132 11 -4 12 121 9 678 -3 754 -1 720 -68 859 -46 93 -160 205 -259 254 -139 68 -73 65 -1705 65 -1185 -1 -1484 -3 -1544 -14z m1526 -754 c698 -349 726 -365 753 -436 30 -80 3 -185 -62 -240 -18 -15 -331 -176 -695 -359 -655 -327 -664 -331 -723 -330 -82 1 -144 39 -182 113 l-28 53 0 678 c0 479 3 687 11 711 19 56 59 100 113 125 99 46 66 59 813 -315z" />
+                            <path
+                                d="M1710 3630 c0 -159 3 -290 8 -289 4 0 135 65 292 143 l285 144 -293 146 -292 146 0 -290z" />
+                            <path
+                                d="M3493 2980 c-489 -52 -911 -384 -1077 -848 -94 -264 -94 -573 1 -846 63 -181 148 -319 283 -460 247 -258 568 -396 924 -396 207 0 386 40 557 125 l86 42 129 -148 c71 -81 133 -148 137 -148 8 -1 317 269 317 276 0 2 -54 66 -121 141 -66 75 -123 142 -125 148 -3 6 20 44 51 85 69 92 144 236 183 354 83 249 83 554 1 800 -162 484 -583 823 -1090 875 -111 11 -148 11 -256 0z m303 -439 c415 -86 706 -463 680 -881 -7 -119 -28 -202 -77 -308 -127 -275 -382 -459 -681 -492 -256 -29 -505 59 -692 244 -165 163 -249 367 -249 606 1 129 17 212 64 325 156 375 558 588 955 506z" />
+                        </g>
+                    </svg> Buscar
                 </a>
             </div>
         </div>
@@ -26,11 +50,29 @@
     <div class="col-md-6 col-lg-4">
         <div class="card h-100">
             <div class="card-body text-center p-4">
-                <img src="/img/mis-listas.svg" alt="Listas" class="custom-icon mb-3" style="width: 64px; height: 64px;">
+                <svg class="dashboard-icon-large" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <g transform="translate(0,512) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+                        <path
+                            d="M1375 4946 c-67 -29 -105 -106 -91 -181 9 -47 59 -102 104 -115 25 -8 401 -10 1194 -8 1150 3 1157 3 1184 24 53 39 69 71 69 134 0 63 -16 95 -69 134 -27 21 -33 21 -1194 23 -955 2 -1173 0 -1197 -11z" />
+                        <path
+                            d="M895 4306 c-67 -29 -105 -106 -91 -181 9 -47 59 -102 104 -115 26 -8 545 -10 1674 -8 1635 3 1637 3 1664 24 53 39 69 71 69 134 0 63 -16 95 -69 134 -27 21 -28 21 -1674 23 -1354 2 -1652 0 -1677 -11z" />
+                        <path
+                            d="M405 3671 c-90 -22 -172 -90 -215 -176 l-25 -50 0 -1525 0 -1525 23 -45 c35 -72 75 -114 144 -151 l63 -34 2165 0 2165 0 51 27 c76 40 107 70 145 140 l34 63 0 1525 0 1525 -34 63 c-37 69 -79 109 -151 144 l-45 23 -2145 2 c-1180 0 -2158 -2 -2175 -6z m2386 -1206 c360 -224 668 -422 686 -440 56 -59 56 -146 0 -207 -18 -21 -308 -208 -687 -444 l-655 -409 -57 0 c-61 0 -94 17 -132 69 -21 27 -21 37 -24 859 -2 458 0 846 3 864 7 40 49 91 90 109 16 8 50 13 76 11 41 -3 123 -52 700 -412z" />
+                    </g>
+                </svg>
                 <h5 class="card-title">Mis Listas</h5>
                 <p class="card-text">Organiza tus películas en listas personalizadas</p>
                 <a href="/listas" class="btn btn-warning">
-                    <img src="/img/mis-listas.svg" class="custom-icon" style="width: 20px; height: 20px;">Ver Listas
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <g transform="translate(0,512) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+                            <path
+                                d="M1375 4946 c-67 -29 -105 -106 -91 -181 9 -47 59 -102 104 -115 25 -8 401 -10 1194 -8 1150 3 1157 3 1184 24 53 39 69 71 69 134 0 63 -16 95 -69 134 -27 21 -33 21 -1194 23 -955 2 -1173 0 -1197 -11z" />
+                            <path
+                                d="M895 4306 c-67 -29 -105 -106 -91 -181 9 -47 59 -102 104 -115 26 -8 545 -10 1674 -8 1635 3 1637 3 1664 24 53 39 69 71 69 134 0 63 -16 95 -69 134 -27 21 -28 21 -1674 23 -1354 2 -1652 0 -1677 -11z" />
+                            <path
+                                d="M405 3671 c-90 -22 -172 -90 -215 -176 l-25 -50 0 -1525 0 -1525 23 -45 c35 -72 75 -114 144 -151 l63 -34 2165 0 2165 0 51 27 c76 40 107 70 145 140 l34 63 0 1525 0 1525 -34 63 c-37 69 -79 109 -151 144 l-45 23 -2145 2 c-1180 0 -2158 -2 -2175 -6z m2386 -1206 c360 -224 668 -422 686 -440 56 -59 56 -146 0 -207 -18 -21 -308 -208 -687 -444 l-655 -409 -57 0 c-61 0 -94 17 -132 69 -21 27 -21 37 -24 859 -2 458 0 846 3 864 7 40 49 91 90 109 16 8 50 13 76 11 41 -3 123 -52 700 -412z" />
+                        </g>
+                    </svg> Ver Listas
                 </a>
             </div>
         </div>
@@ -40,11 +82,21 @@
     <div class="col-md-6 col-lg-4">
         <div class="card h-100">
             <div class="card-body text-center p-4">
-                <img src="/img/nueva-lista.svg" alt="Nueva" class="custom-icon mb-3" style="width: 64px; height: 64px;">
+                <svg class="dashboard-icon-large" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                    <g transform="translate(0,512) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+                        <path
+                            d="M2375 4899 c-782 -64 -1478 -510 -1864 -1196 -324 -576 -385 -1281 -167 -1912 116 -334 288 -611 540 -869 705 -723 1792 -913 2701 -472 491 239 898 659 1115 1150 358 809 242 1724 -306 2422 -129 164 -385 396 -564 510 -199 127 -446 236 -665 293 -166 44 -277 62 -445 75 -150 11 -199 11 -345 -1z m263 -1075 c44 -18 87 -57 110 -99 15 -26 18 -86 22 -490 l5 -460 460 -5 c503 -5 487 -3 547 -67 76 -80 76 -206 0 -286 -60 -64 -44 -62 -547 -67 l-460 -5 -5 -460 c-5 -503 -3 -487 -67 -547 -80 -76 -206 -76 -286 0 -64 60 -62 44 -67 547 l-5 460 -460 5 c-503 5 -487 3 -547 67 -76 80 -76 206 0 286 60 64 44 62 547 67 l460 5 5 460 c5 503 3 487 67 547 59 56 148 73 221 42z" />
+                    </g>
+                </svg>
                 <h5 class="card-title">Nueva Lista</h5>
                 <p class="card-text">Crea una nueva lista para organizar películas</p>
                 <a href="/listas/nueva" class="btn btn-success">
-                    <img src="/img/nueva-lista.svg" class="custom-icon" style="width: 20px; height: 20px;">Crear Lista
+                    <svg class="svg-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                        <g transform="translate(0,512) scale(0.1,-0.1)" fill="currentColor" stroke="none">
+                            <path
+                                d="M2375 4899 c-782 -64 -1478 -510 -1864 -1196 -324 -576 -385 -1281 -167 -1912 116 -334 288 -611 540 -869 705 -723 1792 -913 2701 -472 491 239 898 659 1115 1150 358 809 242 1724 -306 2422 -129 164 -385 396 -564 510 -199 127 -446 236 -665 293 -166 44 -277 62 -445 75 -150 11 -199 11 -345 -1z m263 -1075 c44 -18 87 -57 110 -99 15 -26 18 -86 22 -490 l5 -460 460 -5 c503 -5 487 -3 547 -67 76 -80 76 -206 0 -286 -60 -64 -44 -62 -547 -67 l-460 -5 -5 -460 c-5 -503 -3 -487 -67 -547 -80 -76 -206 -76 -286 0 -64 60 -62 44 -67 547 l-5 460 -460 5 c-503 5 -487 3 -547 67 -76 80 -76 206 0 286 60 64 44 62 547 67 l460 5 5 460 c5 503 3 487 67 547 59 56 148 73 221 42z" />
+                        </g>
+                    </svg> Crear Lista
                 </a>
             </div>
         </div>
@@ -63,8 +115,8 @@
                     required>
             </div>
             <div class="col-md-3">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-search me-1"></i>Buscar
+                <button type="submit" class="btn btn-primary w-100" id="buscar-rapida">
+                    <i class="bi bi-search me-1"></i> Buscar
                 </button>
             </div>
         </form>
@@ -98,26 +150,38 @@
             if (data.exito && data.datos.length > 0) {
                 contenedor.innerHTML = data.datos.map(pelicula => `
                 <div class="col">
-                    <div class="card h-100 bg-dark border-secondary shadow-sm">
+                    <div class="card movie-card h-100">
                         <img src="${pelicula.poster}" class="card-img-top" alt="${pelicula.titulo}"
-                            style="height: 200px; object-fit: cover;"
                             onerror="this.src='https://via.placeholder.com/200x300?text=No+Image'">
-                        <div class="card-body d-flex flex-column">
-                            <h6 class="card-title text-light">${pelicula.titulo}</h6>
-                            <p class="card-text small text-muted mb-2">${pelicula.anio}</p>
+                        <div class="card-body">
+                            <div>
+                                <h6 class="card-title" title="${pelicula.titulo}">${pelicula.titulo}</h6>
+                                <p class="card-text small mb-2">
+                                    ${pelicula.anio} 
+                                    <span class="mx-1 text-muted">|</span> 
+                                    <i class="bi bi-star-fill text-warning"></i> ${pelicula.puntuacion_imdb}
+                                </p>
+                            </div>
                             <div class="mt-auto d-flex justify-content-between align-items-center">
-                                <span class="badge bg-warning text-dark">
-                                    <i class="bi bi-star-fill"></i> ${pelicula.puntuacion_imdb}
+                                <span class="badge bg-warning text-dark border border-dark">
+                                    Populares
                                 </span>
-                                <button class="btn btn-sm btn-primary"
+                                <button class="btn btn-primary btn-add-movie"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar a una lista"
                                     onclick="mostrarModalAgregar('${pelicula.imdb_id}', '${pelicula.titulo.replace(/'/g, "\\'")}')">
-                                    <i class="bi bi-plus"></i>
+                                    <svg class="custom-icon-add" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><g transform="translate(0,512) scale(0.1,-0.1)" fill="currentColor" stroke="none"><path d="M1050 5113 c-79 -8 -230 -48 -319 -84 -152 -62 -251 -129 -381 -259 -170 -171 -261 -332 -321 -570 l-24 -95 0 -1545 0 -1545 24 -95 c59 -236 152 -400 321 -570 168 -168 314 -251 558 -318 l97 -27 1550 0 1550 0 110 29 c226 59 395 154 556 315 192 193 309 432 340 695 7 61 9 586 7 1581 l-3 1490 -27 97 c-65 236 -150 387 -308 549 -164 167 -335 266 -564 327 l-101 27 -1515 1 c-833 1 -1531 -1 -1550 -3z m1629 -1300 c27 -17 58 -48 76 -77 l30 -49 3 -431 c2 -289 6 -434 14 -443 8 -10 94 -13 412 -13 237 0 419 -5 446 -11 128 -29 205 -159 169 -286 -17 -61 -89 -137 -145 -152 -25 -7 -189 -11 -455 -11 -330 0 -419 -3 -427 -13 -8 -9 -12 -153 -14 -443 -3 -418 -4 -430 -25 -469 -59 -111 -188 -156 -299 -106 -53 24 -109 91 -123 146 -7 28 -11 188 -11 454 0 395 -1 411 -19 421 -13 6 -165 10 -427 10 -291 0 -418 3 -448 12 -25 8 -59 31 -86 58 -74 74 -90 166 -44 258 14 29 41 64 60 78 67 51 94 54 534 54 323 0 410 3 418 13 8 9 12 153 14 443 l3 429 28 47 c66 113 205 149 316 81z"/></g></svg>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             `).join('');
+
+                // Inicializar tooltips
+                var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+                var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl)
+                })
             } else {
                 contenedor.innerHTML = '<div class="col-12 text-center text-muted">No se pudieron cargar películas populares</div>';
             }

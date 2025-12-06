@@ -11,7 +11,6 @@
     /* Mappings */
     --bg-primary: var(--ink-black);
     --text-primary: var(--ink-black);
-    /* Changed to dark for better contrast on light fields */
     --accent-main: var(--pearl-aqua);
     --accent-secondary: var(--hot-pink-web);
     --accent-highlight: var(--royal-gold);
@@ -25,10 +24,8 @@ body {
     background: url('../img/fondo01.jpg') no-repeat center center fixed;
     background-size: cover;
     color: var(--text-primary);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Dosis', sans-serif;
 }
-
-/* Overlay removed as requested */
 
 main {
     flex: 1;
@@ -42,8 +39,7 @@ h5,
 h6 {
     color: var(--royal-gold);
     font-weight: 800;
-    text-shadow: 2px 2px 0px var(--ink-black);
-    /* Pop effect */
+
 }
 
 a {
@@ -53,13 +49,11 @@ a {
 /* Cards */
 .card {
     background-color: var(--hot-pink-web);
-    /* Hot pink background as requested */
     border: 3px solid var(--royal-gold);
     border-radius: 20px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     overflow: hidden;
     box-shadow: 5px 5px 0px var(--ink-black);
-    /* Comic/Pop style shadow */
 }
 
 .card:hover {
@@ -73,6 +67,7 @@ a {
 
 .card-title {
     color: var(--ink-black);
+    font-size: 1.5rem;
     font-weight: 800;
     text-transform: uppercase;
 }
@@ -109,42 +104,88 @@ a {
     color: rgba(8, 31, 33, 0.5);
 }
 
-/* Movie cards */
-.movie-card {
+
+/* Custom Add Button - Large Icon Style */
+.btn-add-movie {
+    width: 64px;
+    height: 64px;
+    padding: 0;
     background: transparent;
     border: none;
-    border-radius: 20px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    position: relative;
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: none !important;
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.movie-card:hover {
-    transform: scale(1.03);
-    z-index: 10;
-    box-shadow: 0 15px 40px rgba(250, 224, 76, 0.4);
+.btn-add-movie:hover {
+    transform: scale(1.1);
+    background: transparent;
 }
 
-.movie-card img {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-    border-radius: 20px;
-    border: 2px solid var(--ink-black);
+.custom-icon-add {
+    width: 50px;
+    height: 50px;
+    fill: var(--royal-gold);
+    transition: transform 0.2s ease, fill 0.2s ease;
 }
 
-.movie-card .card-body {
-    background: linear-gradient(to top, var(--hot-pink-web) 0%, rgba(244, 113, 181, 0.95) 90%, transparent 100%);
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 1.5rem;
-    padding-top: 3rem;
+.btn-add-movie:hover .custom-icon-add {
+    transform: scale(1.2) rotate(90deg);
+    fill: var(--hot-pink-web);
+}
+
+/* Dark Card Variant (Containers: Search, Popular Movies Global Container) */
+.card-dark {
+    background-color: var(--ink-black) !important;
+    border: 3px solid var(--royal-gold) !important;
+    box-shadow: 5px 5px 0px var(--pearl-aqua);
+}
+
+.card-dark:hover {
+    box-shadow: 10px 10px 0px var(--pearl-aqua) !important;
+}
+
+.card-dark .card-title,
+.card-dark .card-text,
+.card-dark h5,
+.card-dark i {
+    color: var(--azure-mist) !important;
+}
+
+.card-dark .card-title {
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+
+/* Search Card Styling (Specific for the search bar container) */
+.search-card {
+    background-color: var(--ink-black) !important;
+    color: var(--azure-mist) !important;
+    border: 3px solid var(--royal-gold) !important;
+    box-shadow: 5px 5px 0px var(--pearl-aqua);
+}
+
+.search-card .card-title,
+.search-card .card-title i {
+    color: var(--royal-gold) !important;
+}
+
+.search-card i {
+    color: var(--azure-mist);
+
+}
+
+
+
+input[type="text"] {
+    background-color: var(--royal-gold);
     color: var(--ink-black);
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
+    border: 3px solid var(--royal-gold);
+    padding: 5px 15px;
+    font-size: 1.5rem;
 }
 
 /* Ratings */
@@ -161,18 +202,68 @@ a {
 }
 
 /* Custom Icons (SVGs) */
+/* Custom Icons (SVGs) */
 .custom-icon {
-    width: 32px;
-    /* Slightly larger */
-    height: 32px;
+    width: 24px;
+    height: 24px;
     margin-right: 8px;
-    transition: transform 0.2s ease;
-    /* Filter to match Ink Black #081f21 */
-    filter: brightness(0) saturate(100%) invert(8%) sepia(21%) saturate(961%) hue-rotate(134deg) brightness(96%) contrast(98%);
+    fill: currentColor;
+    transition: transform 0.3s ease;
+    vertical-align: middle;
 }
 
+/* Base SVG Icon Class */
+.svg-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+    vertical-align: middle;
+    fill: currentColor;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: inline-block;
+}
+
+.nav-link:hover .svg-icon,
 .nav-link:hover .custom-icon {
-    transform: scale(1.1) rotate(-5deg);
+    transform: scale(1.2) rotate(-5deg);
+    fill: var(--hot-pink-web);
+    filter: drop-shadow(0 0 5px rgba(244, 113, 181, 0.5));
+}
+
+/* Dashboard Large Icons */
+.dashboard-icon-large {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    fill: var(--ink-black);
+    /* Default to ink black as requested */
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), fill 0.3s ease;
+}
+
+.dashboard-icon-home {
+    width: 64px;
+    height: 64px;
+    margin-bottom: 1rem;
+    fill: var(--ink-black);
+    /* Default to ink black as requested */
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), fill 0.3s ease;
+}
+
+.card:hover .dashboard-icon-large {
+    transform: scale(1.15) rotate(3deg);
+    fill: var(--royal-gold);
+    filter: drop-shadow(3px 3px 0px var(--ink-black));
+}
+
+/* Button Icons */
+.btn .svg-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+}
+
+.btn:hover .svg-icon {
+    transform: scale(1.2);
 }
 
 /* Navbar */
@@ -264,6 +355,15 @@ a {
     color: var(--ink-black);
 }
 
+#buscar-rapida {
+    background-color: var(--pearl-aqua);
+    color: var(--ink-black);
+
+    padding: 10px 15px;
+    font-size: 1.2rem;
+
+}
+
 /* Alerts */
 .alert {
     border: 2px solid var(--ink-black);
@@ -319,31 +419,9 @@ footer {
     animation: fadeIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-/* Dark Card Variant */
-.card-dark {
-    background-color: var(--ink-black) !important;
-    border: 2px solid var(--pearl-aqua);
-    box-shadow: 5px 5px 0px var(--pearl-aqua);
-}
-
-.card-dark:hover {
-    box-shadow: 10px 10px 0px var(--pearl-aqua) !important;
-}
-
-.card-dark .card-title,
-.card-dark .card-text,
-.card-dark h5,
-.card-dark i {
-    color: var(--azure-mist) !important;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
     .search-results {
         grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    }
-
-    .movie-card img {
-        height: 250px;
     }
 }
