@@ -252,7 +252,7 @@ input[type="text"] {
 .card:hover .dashboard-icon-large {
     transform: scale(1.15) rotate(3deg);
     fill: var(--royal-gold);
-    filter: drop-shadow(3px 3px 0px var(--ink-black));
+    filter: drop-shadow(3px 3px 0px var(--azure-mist));
 }
 
 /* Button Icons */

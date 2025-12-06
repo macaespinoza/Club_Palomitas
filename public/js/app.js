@@ -173,30 +173,61 @@ async function buscarPeliculas(query) {
 function renderResultados(peliculas) {
     const container = document.getElementById('resultados')
     if (!container) return
-    const cards = peliculas.map(p => {
-        const poster = p.poster && p.poster !== 'N/A' ? p.poster : '/img/no-image.png'
+    const placeholderImg = 'https://via.placeholder.com/300x450/081f21/eefbfb?text=Poster+No+Encontrado'
+    container.innerHTML = peliculas.map(pelicula => {
+        const posterSrc = (pelicula.poster && pelicula.poster !== 'N/A') ? pelicula.poster : placeholderImg
         return `
-        <div class="col-md-4 mb-4">
-            <div class="card movie-card h-100">
-                <img src="${poster}" class="card-img-top" alt="${p.titulo}" onerror="this.src='/img/no-image.png'">
-                <div class="card-body">
-                    <div>
-                        <h5 class="card-title" title="${p.titulo}">${p.titulo}</h5>
-                        <p class="card-text small mb-2">
-                             ${p.anio || 'N/D'}
-                        </p>
-                    </div>
-                    <div class="mt-auto d-flex justify-content-between align-items-center">
-                         <span class="badge bg-secondary border border-light">${p.tipo || 'N/D'}</span>
-                         <a href="/peliculas/${p.imdb_id}" class="btn btn-primary btn-sm rounded-pill px-3">
-                            <i class="bi bi-eye me-1"></i>Ver detalle
-                         </a>
+                <div class="col">
+                    <div class="card movie-card h-100 d-flex flex-column">
+                        <img src="${posterSrc}" class="card-img-top" alt="${pelicula.titulo}"
+                            onerror="this.src='${placeholderImg}'">
+                        <div class="card-body d-flex flex-column">
+                            <!-- PARTE SUPERIOR: Título, Tag, Año, Rating -->
+                            <div class="card-content-top">
+                                <h6 class="card-title-container mb-1">
+                                    <span class="card-title-text" tabindex="0" data-bs-toggle="popover"
+                                        data-bs-trigger="hover focus" data-bs-placement="top"
+                                        data-bs-content="${pelicula.titulo}">${pelicula.titulo}</span>
+                                </h6>
+                                <span class="badge badge-tipo mb-1">${pelicula.tipo}</span>
+                                <p class="card-text small mb-0 text-ink-black">
+                                    ${pelicula.anio} 
+                                    <span class="mx-1 text-muted">|</span> 
+                                    <i class="bi bi-star-fill text-warning"></i> ${pelicula.puntuacion_imdb || 'N/A'}
+                                </p>
+                            </div>
+
+                            <!-- SEPARADOR -->
+                            <div class="card-separator my-2"></div>
+
+                            <!-- PARTE INFERIOR: Botón grande -->
+                            <div class="mt-auto">
+                                <button class="btn btn-card-action w-100 py-2"
+                                    onclick="mostrarModalAgregar('${pelicula.imdb_id}', '${pelicula.titulo.replace(/'/g, "\\'")}')">
+                                    <i class="bi bi-plus-circle-fill me-2" style="font-size: 1.2rem;"></i>
+                                    Agregar a una lista
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>`
+            `
     }).join('')
-    container.innerHTML = `<div class="row">${cards}</div>`
+
+    // Wrap in row with same classes as dashboard
+    const wrapper = document.createElement('div')
+    wrapper.className = 'row row-cols-2 row-cols-md-4 row-cols-lg-4 g-3'
+    wrapper.innerHTML = container.innerHTML
+    container.innerHTML = ''
+    container.appendChild(wrapper)
+
+    // Inicializar popovers
+    setTimeout(() => {
+        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+        var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl)
+        })
+    }, 100)
 }
 
 // ---------- API: agregarALista (used by other pages) ----------
@@ -212,5 +243,86 @@ async function agregarALista(listaId, peliculaId) {
     } catch (error) {
         console.error('Error agregando película:', error)
         return { exito: false, error: 'Error de conexión' }
+    }
+}
+
+// ---------- Modal para agregar películas a listas ----------
+let peliculaSeleccionada = { imdb_id: '', titulo: '' }
+
+function mostrarModalAgregar(imdbId, titulo) {
+    peliculaSeleccionada = { imdb_id: imdbId, titulo }
+
+    fetch('/api/listas', { credentials: 'same-origin' })
+        .then(res => res.json())
+        .then(data => {
+            if (data.exito && data.datos.length > 0) {
+                const opciones = data.datos.map(lista =>
+                    `<option value="${lista.id}">${lista.nombre}</option>`
+                ).join('')
+
+                const contenido = `
+                <div class="modal fade" id="modalAgregarLista" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content bg-dark text-light">
+                            <div class="modal-header border-secondary">
+                                <h5 class="modal-title">Agregar "${titulo}" a lista</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <select id="listaSelect" class="form-select bg-secondary text-light border-dark">
+                                    ${opciones}
+                                </select>
+                            </div>
+                            <div class="modal-footer border-secondary">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" onclick="agregarPeliculaALista()">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `
+
+                const modalAnterior = document.getElementById('modalAgregarLista')
+                if (modalAnterior) modalAnterior.remove()
+
+                document.body.insertAdjacentHTML('beforeend', contenido)
+                const modal = new bootstrap.Modal(document.getElementById('modalAgregarLista'))
+                modal.show()
+            } else {
+                alert('Primero debes crear una lista')
+                window.location.href = '/listas/nueva'
+            }
+        })
+        .catch(error => {
+            console.error(error)
+            alert('Error al cargar las listas')
+        })
+}
+
+async function agregarPeliculaALista() {
+    const listaId = document.getElementById('listaSelect').value
+
+    try {
+        const res = await fetch('/api/peliculas/agregar-a-lista', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({
+                imdb_id: peliculaSeleccionada.imdb_id,
+                lista_id: parseInt(listaId)
+            })
+        })
+
+        const data = await res.json()
+
+        if (data.exito) {
+            alert(`"${peliculaSeleccionada.titulo}" agregada a la lista`)
+            bootstrap.Modal.getInstance(document.getElementById('modalAgregarLista')).hide()
+        } else {
+            alert(data.error || 'Error al agregar película')
+        }
+    } catch (error) {
+        console.error(error)
+        alert('Error de conexión')
     }
 }

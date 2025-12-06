@@ -13,13 +13,13 @@
     </p>
     {{/if}}
 
-    <form action="/buscar" method="GET" class="row g-3 justify-content-center">
+    <form action="/buscar" method="GET" class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
-            <input type="text" name="q" class="form-control bg-dark text-light border-secondary"
-                placeholder="Escribe el nombre de una película..." value="{{query}}" required>
-        </div>
-        <div class="col-md-2 col-lg-2">
-            <button type="submit" class="btn btn-buscar w-100" id="btn-buscar">
+            <div class="mb-3">
+                <input type="text" name="q" class="form-control bg-dark text-light border-secondary"
+                    placeholder="Escribe el nombre de una película..." value="{{query}}" required>
+            </div>
+            <button type="submit" class="btn btn-success d-block mx-auto w-50" id="btn-buscar">
                 <i class="bi bi-search me-1"></i>Buscar
             </button>
         </div>
@@ -28,3 +28,99 @@
     {{!-- Contenedor donde el frontend (app.js) renderizará los resultados de la API --}}
     <div id="resultados" class="mt-5"></div>
 </div>
+
+<style>
+    /* POSTERS - ALTURA FIJA */
+    .movie-card .card-img-top {
+        height: 300px;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    /* TÍTULO DE PELÍCULA - ALTURA FIJA 2 LÍNEAS */
+    .card-title-container {
+        color: var(--ink-black, #081f21);
+        font-size: 1.8rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin: 0;
+        height: 2.6em;
+        line-height: 1.3em;
+    }
+
+    .card-title-text {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+        word-break: break-word;
+    }
+
+    /* BADGE TIPO PELÍCULA - COLOR AQUA */
+    .badge-tipo {
+        background-color: var(--pearl-aqua, #69dadc);
+        color: var(--ink-black, #081f21);
+        font-size: 0.7rem;
+        font-weight: 700;
+        padding: 0.2rem 0.5rem;
+        border-radius: 6px;
+        text-transform: uppercase;
+        display: inline-block;
+    }
+
+    /* COLOR INK-BLACK PARA TEXTOS */
+    .text-ink-black {
+        color: var(--ink-black, #081f21);
+    }
+
+    /* SEPARADOR ENTRE CONTENIDO SUPERIOR E INFERIOR */
+    .card-separator {
+        border-top: 2px dashed rgba(8, 31, 33, 0.2);
+        width: 100%;
+    }
+
+    /* BOTONES DE ACCIÓN EN CARDS - COMPACTO */
+    .btn-card-action {
+        background-color: var(--ink-black, #081f21) !important;
+        color: var(--azure-mist, #eefbfb) !important;
+        border: 2px solid var(--ink-black, #081f21) !important;
+        border-radius: 8px;
+        padding: 0.3rem 0.5rem;
+        transition: all 0.2s ease;
+        font-weight: 600;
+        font-size: 0.85rem;
+        white-space: nowrap;
+    }
+
+    .btn-card-action:hover {
+        background-color: var(--royal-gold, #fae04c) !important;
+        color: var(--ink-black, #081f21) !important;
+        transform: translateY(-2px);
+        box-shadow: 3px 3px 0px var(--ink-black, #081f21);
+    }
+
+    .btn-card-action i {
+        font-size: 0.9rem;
+    }
+
+    /* POPOVER CUSTOM STYLING */
+    .popover {
+        background-color: var(--ink-black, #081f21);
+        border: 2px solid var(--royal-gold, #fae04c);
+        border-radius: 12px;
+        box-shadow: 4px 4px 0px var(--pearl-aqua, #69dadc);
+    }
+
+    .popover-body {
+        color: var(--azure-mist, #eefbfb);
+        font-style: italic;
+        padding: 0.75rem 1rem;
+    }
+
+    .popover-arrow::before,
+    .popover-arrow::after {
+        border-top-color: var(--ink-black, #081f21) !important;
+    }
+</style>
