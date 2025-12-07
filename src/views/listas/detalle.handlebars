@@ -340,8 +340,8 @@
                                 <div class="mt-auto d-flex justify-content-between align-items-center">
                                     <span class="badge bg-secondary text-light border border-light">Resultado</span>
                                     <button class="btn btn-primary btn-add-movie"
-                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar a una lista"
-                                        onclick="agregarPeliculaALista('${pelicula.imdb_id}', '${pelicula.titulo.replace(/'/g, "\\'")}')">
+                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Agregar a esta lista"
+                                        onclick="agregarPeliculaAListaActual('${pelicula.imdb_id}', '${pelicula.titulo.replace(/'/g, "\\'")}')">
                                         <img src="/img/agregar-pelicula.svg" alt="Agregar" class="custom-icon-add">
                                     </button>
                                 </div>
@@ -365,8 +365,8 @@
         }
     });
 
-    // AGREGAR PELICULA
-    async function agregarPeliculaALista(imdbId, titulo) {
+    // AGREGAR PELICULA A ESTA LISTA
+    async function agregarPeliculaAListaActual(imdbId, titulo) {
         try {
             const res = await fetch('/api/peliculas/agregar-a-lista', {
                 method: 'POST',
