@@ -421,7 +421,75 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
+
+    /* Layout: 2 Cards per row forced if not using Bootstrap classes correctly */
     .search-results {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1rem;
+    }
+
+    /* Text Sizes - Much Larger as requested */
+    h1 {
+        font-size: 2.5rem !important;
+    }
+
+    h2 {
+        font-size: 2.2rem !important;
+    }
+
+    h3 {
+        font-size: 2rem !important;
+    }
+
+    h4 {
+        font-size: 1.8rem !important;
+    }
+
+    h5 {
+        font-size: 1.6rem !important;
+    }
+
+    h6,
+    .card-title {
+        font-size: 1.4rem !important;
+    }
+
+    .card-text {
+        font-size: 1.1rem !important;
+    }
+
+    /* Buttons - Large and ample padding */
+    .btn {
+        padding: 0.8rem 1.2rem !important;
+        font-size: 1.1rem !important;
+        width: 100%;
+        /* Make buttons full width on mobile for easier touch */
+        margin-bottom: 0.5rem;
+    }
+
+    /* Ample Padding */
+    .container {
+        padding-left: 1.5rem !important;
+        padding-right: 1.5rem !important;
+    }
+
+    .card-body {
+        padding: 1.5rem !important;
+    }
+
+    /* Adjust specific components for mobile compactness/layout */
+    .navbar-brand {
+        font-size: 1.8rem;
+    }
+
+    /* Movie Cards specifically */
+    .movie-card .card-img-top {
+        height: 250px;
+        /* Slightly shorter to fit 2 rows better on small screens */
+    }
+
+    .card-title-container {
+        font-size: 1.2rem;
+        height: auto;
     }
 }

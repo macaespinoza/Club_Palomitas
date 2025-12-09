@@ -35,14 +35,14 @@
                     </button>
                 </div>
             </form>
-            <div id="resultadosBusqueda" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3 mt-2"></div>
+            <div id="resultadosBusqueda" class="row row-cols-2 row-cols-md-2 row-cols-lg-4 g-3 mt-2"></div>
         </div>
     </div>
     {{/if}}
 
     <h3 class="mb-3">Películas en esta lista</h3>
     {{#if lista.peliculas.length}}
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-3">
+    <div class="row row-cols-2 row-cols-md-2 row-cols-lg-4 g-3">
         {{#each lista.peliculas}}
         <div class="col">
             <div class="card movie-card h-100 d-flex flex-column">
