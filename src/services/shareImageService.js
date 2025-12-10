@@ -2,6 +2,7 @@ const sharp = require('sharp')
 const path = require('path')
 const https = require('https')
 const http = require('http')
+const fs = require('fs')
 
 // Colores de la app
 const COLORS = {
@@ -98,6 +99,38 @@ async function generateShareImage({
     movieYear,
     username
 }) {
+    // Cargar fuentes
+    const fontPath = path.join(__dirname, '../fonts')
+    const fontRegular = fs.readFileSync(path.join(fontPath, 'Dosis-Regular.ttf')).toString('base64')
+    const fontSemiBold = fs.readFileSync(path.join(fontPath, 'Dosis-SemiBold.ttf')).toString('base64')
+    const fontExtraBold = fs.readFileSync(path.join(fontPath, 'Dosis-ExtraBold.ttf')).toString('base64')
+
+    const fontStyles = `
+        <style>
+            @font-face {
+                font-family: "Dosis";
+                src: url("data:font/ttf;base64,${fontRegular}") format("truetype");
+                font-weight: 400;
+                font-style: normal;
+            }
+            @font-face {
+                font-family: "Dosis";
+                src: url("data:font/ttf;base64,${fontSemiBold}") format("truetype");
+                font-weight: 600;
+                font-style: normal;
+            }
+            @font-face {
+                font-family: "Dosis";
+                src: url("data:font/ttf;base64,${fontExtraBold}") format("truetype");
+                font-weight: 800;
+                font-style: normal;
+            }
+            text {
+                font-family: "Dosis";
+            }
+        </style>
+    `
+
     // Descargar poster
     let posterBuffer
     try {
@@ -115,9 +148,9 @@ async function generateShareImage({
         }).png().toBuffer()
     }
 
-    // Redimensionar poster para que quepa bien
-    const posterWidth = 500
-    const posterHeight = 750
+    // Modificar redimensionamiento del poster
+    const posterWidth = 600
+    const posterHeight = 900
     const resizedPoster = await sharp(posterBuffer)
         .resize(posterWidth, posterHeight, { fit: 'cover' })
         .png()
@@ -126,7 +159,7 @@ async function generateShareImage({
     // Crear overlay con bordes redondeados para el poster
     const roundedCorners = Buffer.from(
         `<svg width="${posterWidth}" height="${posterHeight}">
-            <rect x="0" y="0" width="${posterWidth}" height="${posterHeight}" rx="20" ry="20" fill="white"/>
+            <rect x="0" y="0" width="${posterWidth}" height="${posterHeight}" rx="25" ry="25" fill="white"/>
         </svg>`
     )
 
@@ -140,22 +173,46 @@ async function generateShareImage({
 
     // Preparar texto del comentario
     console.log('Comentario recibido:', comment)
-    const commentLines = comment ? wrapText(comment, 38) : []
-    console.log('Líneas de comentario:', commentLines)
+    const commentLines = comment ? wrapText(comment, 28) : []
     const maxCommentLines = 6
     const displayLines = commentLines.slice(0, maxCommentLines)
     if (commentLines.length > maxCommentLines) {
         displayLines[maxCommentLines - 1] = displayLines[maxCommentLines - 1].slice(0, -3) + '...'
     }
 
-    // Generar SVG del contenido
-    const posterX = (WIDTH - posterWidth) / 2
-    const posterY = 280
-    const starsY = posterY + posterHeight + 50
-    const commentY = starsY + 100
-    const lineHeight = 42
+    // Dimensión y posición de Estrellas
+    // Queremos que ocupen casi todo el ancho del poster (600px)
+    const starsGap = 25
+    // 5 estrellas + 4 espacios. Width = 5*size + 4*gap. Queremos Width ~= 600.
+    // 5*size = 600 - 4*25 = 500 => size = 100.
+    const starSize = 100
+    const starsTotalWidth = (starSize * 5) + (starsGap * 4)
 
-    // Generar el SVG del comentario por separado
+    // Posiciones Verticales
+    const posterX = (WIDTH - posterWidth) / 2
+    const posterY = 340
+
+    // Estrellas justo debajo del poster
+    const starsTopMargin = 40
+    const starsY = posterY + posterHeight + starsTopMargin // Start Y de las estrellas
+
+    // Footer info position
+    const footerY = HEIGHT - 180 // Donde empieza "Reseña de"
+
+    // Cálculo dinámico para centrar el comentario
+    const starsBottomY = starsY + starSize
+    const availableSpace = footerY - starsBottomY
+    const lineHeight = 55
+    const commentBlockHeight = displayLines.length * lineHeight
+
+    // Centramos el bloque de texto en el espacio disponible
+    // Si no hay mucho espacio, dejamos un margen mínimo de 50px
+    let commentstartY = starsBottomY + (availableSpace - commentBlockHeight) / 2
+
+    // Corrección por si solapa
+    if (commentstartY < starsBottomY + 20) commentstartY = starsBottomY + 20
+
+    // Generar SVG del comentario
     let commentSvg = ''
     if (displayLines.length > 0) {
         for (let i = 0; i < displayLines.length; i++) {
@@ -164,8 +221,9 @@ async function generateShareImage({
             const isLast = i === displayLines.length - 1
             const openQuote = isFirst ? '"' : ''
             const closeQuote = isLast ? '"' : ''
-            const yPos = commentY + (i * lineHeight)
-            commentSvg += `<text x="${WIDTH / 2}" y="${yPos}" font-family="Arial, sans-serif" font-size="32" fill="${COLORS.azureMist}" text-anchor="middle" font-style="italic">${openQuote}${escapeXml(line)}${closeQuote}</text>\n`
+            // Centrar verticalmente cada línea
+            const yPos = commentstartY + (i * lineHeight) + (lineHeight / 2) // +lineHeight/2 para ajuste visual aprox del baseline
+            commentSvg += `<text x="${WIDTH / 2}" y="${yPos}" font-family="Dosis" font-weight="400" font-size="44" fill="${COLORS.azureMist}" text-anchor="middle" font-style="italic">${openQuote}${escapeXml(line)}${closeQuote}</text>\n`
         }
     }
     console.log('SVG del comentario generado:', commentSvg)
@@ -181,6 +239,7 @@ async function generateShareImage({
         <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
             <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="${COLORS.hotPinkWeb}" flood-opacity="0.5"/>
         </filter>
+        ${fontStyles}
     </defs>
 
     <!-- Fondo -->
@@ -190,33 +249,36 @@ async function generateShareImage({
     <circle cx="100" cy="200" r="150" fill="${COLORS.hotPinkWeb}" opacity="0.1"/>
     <circle cx="${WIDTH - 100}" cy="${HEIGHT - 300}" r="200" fill="${COLORS.pearlAqua}" opacity="0.1"/>
 
-    <!-- Logo/Título de la app -->
-    <text x="${WIDTH / 2}" y="100" font-family="Arial, sans-serif" font-size="48" font-weight="800" fill="${COLORS.royalGold}" text-anchor="middle">CLUB PALOMITAS</text>
+    <!-- Logo/Título de la app (Estilo igual al título de película) -->
+    <text x="${WIDTH / 2}" y="120" font-family="Dosis" font-size="65" font-weight="800" fill="${COLORS.royalGold}" text-anchor="middle" letter-spacing="2">CLUB PALOMITAS</text>
 
     <!-- Línea decorativa -->
-    <line x1="${WIDTH / 2 - 150}" y1="130" x2="${WIDTH / 2 + 150}" y2="130" stroke="${COLORS.pearlAqua}" stroke-width="3"/>
+    <line x1="${WIDTH / 2 - 200}" y1="155" x2="${WIDTH / 2 + 200}" y2="155" stroke="${COLORS.pearlAqua}" stroke-width="4"/>
 
     <!-- Título película -->
-    <text x="${WIDTH / 2}" y="200" font-family="Arial, sans-serif" font-size="38" font-weight="800" fill="${COLORS.azureMist}" text-anchor="middle">${escapeXml(movieTitle.length > 30 ? movieTitle.substring(0, 30) + '...' : movieTitle)}</text>
-    <text x="${WIDTH / 2}" y="240" font-family="Arial, sans-serif" font-size="24" fill="${COLORS.pearlAqua}" text-anchor="middle">${movieYear}</text>
+    <!-- Título película -->
+    <text x="${WIDTH / 2}" y="240" font-family="Dosis" font-size="58" font-weight="800" fill="${COLORS.azureMist}" text-anchor="middle">${escapeXml(movieTitle.length > 25 ? movieTitle.substring(0, 25) + '...' : movieTitle)}</text>
+    <text x="${WIDTH / 2}" y="295" font-family="Dosis" font-size="35" font-weight="600" fill="${COLORS.pearlAqua}" text-anchor="middle">${movieYear}</text>
 
     <!-- Borde del poster -->
-    <rect x="${posterX - 8}" y="${posterY - 8}" width="${posterWidth + 16}" height="${posterHeight + 16}" rx="24" ry="24" fill="none" stroke="${COLORS.royalGold}" stroke-width="4" filter="url(#shadow)"/>
+    <rect x="${posterX - 10}" y="${posterY - 10}" width="${posterWidth + 20}" height="${posterHeight + 20}" rx="30" ry="30" fill="none" stroke="${COLORS.royalGold}" stroke-width="5" filter="url(#shadow)"/>
 
-    <!-- Estrellas -->
-    ${generateStarsInline(rating, starsY)}
+    <!-- Estrellas (pasamos parametros de tamaño para llenar el ancho) -->
+    ${generateStarsInline(rating, starsY, starSize, starsGap)}
 
     <!-- Comentario -->
     ${commentSvg}
 
     <!-- Usuario -->
-    <text x="${WIDTH / 2}" y="${HEIGHT - 150}" font-family="Arial, sans-serif" font-size="28" fill="${COLORS.hotPinkWeb}" text-anchor="middle">Resena de @${escapeXml(username)}</text>
+    <text x="${WIDTH / 2}" y="${HEIGHT - 180}" font-family="Dosis" font-size="30" font-weight="400" fill="${COLORS.pearlAqua}" text-anchor="middle">Reseña de</text>
+    <text x="${WIDTH / 2}" y="${HEIGHT - 130}" font-family="Dosis" font-size="48" font-weight="800" fill="${COLORS.hotPinkWeb}" text-anchor="middle">@${escapeXml(username)}</text>
 
     <!-- Línea inferior -->
-    <line x1="${WIDTH / 2 - 100}" y1="${HEIGHT - 100}" x2="${WIDTH / 2 + 100}" y2="${HEIGHT - 100}" stroke="${COLORS.pearlAqua}" stroke-width="2"/>
+    <line x1="${WIDTH / 2 - 150}" y1="${HEIGHT - 90}" x2="${WIDTH / 2 + 150}" y2="${HEIGHT - 90}" stroke="${COLORS.pearlAqua}" stroke-width="3" opacity="0.5"/>
 
     <!-- Watermark -->
-    <text x="${WIDTH / 2}" y="${HEIGHT - 60}" font-family="Arial, sans-serif" font-size="20" fill="${COLORS.pearlAqua}" text-anchor="middle" opacity="0.7">clubpalomitas.app</text>
+    <!-- Watermark -->
+    <text x="${WIDTH / 2}" y="${HEIGHT - 50}" font-family="Dosis" font-size="28" font-weight="600" fill="${COLORS.pearlAqua}" text-anchor="middle" opacity="0.8">clubpalomitas.app</text>
 </svg>`
 
     // Crear imagen base con el SVG
@@ -238,11 +300,9 @@ async function generateShareImage({
 }
 
 /**
- * Genera estrellas inline para el SVG principal
+ * Genera estrellas inline con tamaño personalizado
  */
-function generateStarsInline(rating, y) {
-    const starSize = 50
-    const gap = 15
+function generateStarsInline(rating, y, starSize, gap) {
     const totalWidth = (starSize * 5) + (gap * 4)
     const startX = (WIDTH - totalWidth) / 2
 

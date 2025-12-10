@@ -78,7 +78,8 @@
         min-height: 100vh;
     }
 
-    .navbar, footer {
+    .navbar,
+    footer {
         display: none !important;
     }
 
@@ -107,7 +108,7 @@
         align-items: center;
         position: relative;
         overflow: hidden;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
     }
 
     /* Decoraciones de fondo */
@@ -147,7 +148,7 @@
         font-weight: 800;
         color: #fae04c;
         margin: 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     }
 
     .header-line {
@@ -214,13 +215,13 @@
 
     /* Comentario */
     .comment-container {
-        flex: 1;
+        margin: 20px 0;
+        width: 100%;
         display: flex;
+        justify-content: center;
         align-items: center;
-        padding: 0 10px;
-        z-index: 1;
-        max-height: 150px;
-        overflow: hidden;
+        padding: 0 15px;
+        z-index: 2;
     }
 
     .comment-text {
@@ -228,12 +229,9 @@
         font-style: italic;
         color: #eefbfb;
         text-align: center;
-        line-height: 1.5;
+        line-height: 1.4;
         margin: 0;
-        display: -webkit-box;
-        -webkit-line-clamp: 5;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
     }
 
     /* Usuario */
@@ -370,11 +368,11 @@
 </style>
 
 <script>
-    const peliculaId = {{pelicula.id}};
+    const peliculaId = {{ pelicula.id }};
     const peliculaTitulo = "{{pelicula.titulo}}";
 
     // Verificar soporte para Web Share API
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         if (navigator.share && navigator.canShare) {
             document.querySelector('.btn-native-share').style.display = 'flex';
         }
