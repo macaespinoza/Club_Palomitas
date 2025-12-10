@@ -194,9 +194,13 @@ async function generateShareImage({
             ${generateStarsInline(rating, starsY)}
 
             <!-- Comentario -->
-            ${displayLines.map((line, i) => `
-                <text x="${WIDTH / 2}" y="${commentY + (i * lineHeight)}" font-family="Dosis, sans-serif" font-size="32" fill="${COLORS.azureMist}" text-anchor="middle" font-style="italic">"${escapeXml(line)}${i === displayLines.length - 1 ? '"' : ''}</text>
-            `).join('')}
+            ${displayLines.length > 0 ? displayLines.map((line, i) => {
+                const isFirst = i === 0
+                const isLast = i === displayLines.length - 1
+                const openQuote = isFirst ? '"' : ''
+                const closeQuote = isLast ? '"' : ''
+                return `<text x="${WIDTH / 2}" y="${commentY + (i * lineHeight)}" font-family="Dosis, sans-serif" font-size="32" fill="${COLORS.azureMist}" text-anchor="middle" font-style="italic">${openQuote}${escapeXml(line)}${closeQuote}</text>`
+            }).join('\n            ') : ''}
 
             <!-- Usuario -->
             <text x="${WIDTH / 2}" y="${HEIGHT - 150}" font-family="Dosis, sans-serif" font-size="28" fill="${COLORS.hotPinkWeb}" text-anchor="middle">Reseña de @${escapeXml(username)}</text>
