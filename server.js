@@ -117,6 +117,52 @@ app.get('/listas/nueva', (req, res) => {
     })
 })
 
+// VISTA DE RESEÑA PARA COMPARTIR
+app.get('/resena/:peliculaId', async (req, res) => {
+    if (!req.usuario) {
+        return res.redirect('/auth/login')
+    }
+    try {
+        const { Calificacion, Comentario, Usuario } = require('./src/models/associations')
+
+        const pelicula = await Pelicula.findByPk(req.params.peliculaId)
+        if (!pelicula) {
+            return res.status(404).render('error', {
+                titulo: 'Película no encontrada',
+                mensaje: 'La película que buscas no existe'
+            })
+        }
+
+        const calificacion = await Calificacion.findOne({
+            where: { usuario_id: req.usuario.id, pelicula_id: req.params.peliculaId }
+        })
+
+        const comentario = await Comentario.findOne({
+            where: { usuario_id: req.usuario.id, pelicula_id: req.params.peliculaId }
+        })
+
+        const usuario = await Usuario.findByPk(req.usuario.id)
+
+        // Obtener lista_id de la query string para el botón de volver
+        const listaId = req.query.lista || null
+
+        res.render('resena', {
+            titulo: `Reseña: ${pelicula.titulo}`,
+            pelicula: pelicula.get({ plain: true }),
+            calificacion: calificacion?.puntuacion || null,
+            comentario: comentario?.contenido || null,
+            usuario: {
+                nombre: usuario.nombre_usuario,
+                avatar: usuario.avatar_url
+            },
+            listaId
+        })
+    } catch (error) {
+        console.error('ERROR:', error)
+        res.status(500).render('error', { mensaje: 'Error al cargar la reseña.' })
+    }
+})
+
 app.get('/listas/:id', async (req, res) => {
     if (!req.usuario) {
         return res.redirect('/auth/login')
