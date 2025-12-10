@@ -1,4 +1,4 @@
-//calculo subtotal formulario compras
+// CALCULO SUBTOTAL
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('tbody tr').forEach(row => {
         const cantidadInput = row.querySelector('.cantidad')

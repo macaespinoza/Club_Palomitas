@@ -1,9 +1,6 @@
 const { Lista, Pelicula, ListaPelicula, Usuario, Calificacion, Comentario } = require('../models/associations')
 
-/**
- * GET /api/listas
- * Obtener todas las listas del usuario autenticado
- */
+// OBTENER TODAS LAS LISTAS DEL USUARIO
 exports.obtenerTodas = async (req, res, next) => {
     try {
         const listas = await Lista.findAll({
@@ -24,10 +21,7 @@ exports.obtenerTodas = async (req, res, next) => {
     }
 }
 
-/**
- * GET /api/listas/publicas
- * Obtener listas públicas de todos los usuarios
- */
+// OBTENER LISTAS PUBLICAS
 exports.obtenerPublicas = async (req, res, next) => {
     try {
         const { pagina = 1, limite = 10 } = req.query
@@ -65,10 +59,7 @@ exports.obtenerPublicas = async (req, res, next) => {
     }
 }
 
-/**
- * GET /api/listas/:id
- * Obtener una lista específica
- */
+// OBTENER UNA LISTA
 exports.obtenerUna = async (req, res, next) => {
     try {
         const lista = await Lista.findByPk(req.params.id, {
@@ -104,8 +95,6 @@ exports.obtenerUna = async (req, res, next) => {
             })
         }
 
-        // Verificar acceso: debe ser pública o pertenecer al usuario
-        // Convertimos req.auth.id a entero para asegurar comparación correcta
         if (!lista.es_publica && lista.usuario_id !== (req.auth?.id ? parseInt(req.auth.id) : null)) {
             return res.status(403).json({
                 exito: false,
@@ -122,10 +111,7 @@ exports.obtenerUna = async (req, res, next) => {
     }
 }
 
-/**
- * POST /api/listas
- * Crear una nueva lista
- */
+// CREAR LISTA
 exports.crear = async (req, res, next) => {
     try {
         const { nombre, descripcion, es_publica } = req.body
@@ -154,10 +140,7 @@ exports.crear = async (req, res, next) => {
     }
 }
 
-/**
- * PUT /api/listas/:id
- * Actualizar una lista
- */
+// ACTUALIZAR LISTA
 exports.actualizar = async (req, res, next) => {
     try {
         const { nombre, descripcion, es_publica } = req.body
@@ -171,7 +154,6 @@ exports.actualizar = async (req, res, next) => {
             })
         }
 
-        // Solo el propietario puede editar
         if (lista.usuario_id !== parseInt(req.auth.id)) {
             return res.status(403).json({
                 exito: false,
@@ -195,10 +177,7 @@ exports.actualizar = async (req, res, next) => {
     }
 }
 
-/**
- * DELETE /api/listas/:id
- * Eliminar una lista
- */
+// ELIMINAR LISTA
 exports.eliminar = async (req, res, next) => {
     try {
         const lista = await Lista.findByPk(req.params.id)
@@ -210,7 +189,6 @@ exports.eliminar = async (req, res, next) => {
             })
         }
 
-        // Solo el propietario puede eliminar
         if (lista.usuario_id !== parseInt(req.auth.id)) {
             return res.status(403).json({
                 exito: false,
@@ -229,10 +207,7 @@ exports.eliminar = async (req, res, next) => {
     }
 }
 
-/**
- * POST /api/listas/:id/peliculas
- * Agregar una película a una lista
- */
+// AGREGAR PELICULA A LISTA
 exports.agregarPelicula = async (req, res, next) => {
     try {
         const { pelicula_id, notas } = req.body
@@ -246,7 +221,6 @@ exports.agregarPelicula = async (req, res, next) => {
             })
         }
 
-        // Solo el propietario puede agregar películas
         if (lista.usuario_id !== parseInt(req.auth.id)) {
             return res.status(403).json({
                 exito: false,
@@ -254,7 +228,6 @@ exports.agregarPelicula = async (req, res, next) => {
             })
         }
 
-        // Verificar que la película existe
         const pelicula = await Pelicula.findByPk(pelicula_id)
         if (!pelicula) {
             return res.status(404).json({
@@ -263,7 +236,6 @@ exports.agregarPelicula = async (req, res, next) => {
             })
         }
 
-        // Verificar si ya está en la lista
         const existente = await ListaPelicula.findOne({
             where: { lista_id: lista.id, pelicula_id: pelicula.id }
         })
@@ -275,7 +247,6 @@ exports.agregarPelicula = async (req, res, next) => {
             })
         }
 
-        // Agregar película a la lista
         await ListaPelicula.create({
             lista_id: lista.id,
             pelicula_id: pelicula.id,
@@ -291,10 +262,7 @@ exports.agregarPelicula = async (req, res, next) => {
     }
 }
 
-/**
- * DELETE /api/listas/:id/peliculas/:peliculaId
- * Remover una película de una lista
- */
+// REMOVER PELICULA DE LISTA
 exports.removerPelicula = async (req, res, next) => {
     try {
         const { id, peliculaId } = req.params
@@ -308,7 +276,6 @@ exports.removerPelicula = async (req, res, next) => {
             })
         }
 
-        // Solo el propietario puede remover películas
         if (lista.usuario_id !== parseInt(req.auth.id)) {
             return res.status(403).json({
                 exito: false,
@@ -336,7 +303,7 @@ exports.removerPelicula = async (req, res, next) => {
     }
 }
 
-// Función auxiliar para formatear lista
+// FORMATEAR LISTA
 function formatearLista(lista) {
     const formateado = {
         id: lista.id,
@@ -358,26 +325,17 @@ function formatearLista(lista) {
 
     if (lista.peliculas) {
         formateado.peliculas = lista.peliculas.map(pelicula => {
-            // Encontrar la calificación y comentario del propietario de la lista si existen
-            // Si estuviéramos viendo la lista como otro usuario, aquí podríamos filtrar por req.auth.id
-            // pero para la vista de detalle de lista, generalmente queremos ver la opinión del creador de la lista
-            // o mi propia opinión.
-            // Asumiremos que 'mi_calificacion' se refiere a la calificación del usuario DUEÑO de la lista
-            // ya que estamos viendo SU lista.
-
-            let miCalificacion = null;
-            let miComentario = null;
+            let miCalificacion = null
+            let miComentario = null
 
             if (pelicula.calificaciones && pelicula.calificaciones.length > 0) {
-                // Buscamos la calificación del dueño de la lista
-                const calif = pelicula.calificaciones.find(c => c.usuario_id === lista.usuario_id);
-                if (calif) miCalificacion = calif.puntuacion;
+                const calif = pelicula.calificaciones.find(c => c.usuario_id === lista.usuario_id)
+                if (calif) miCalificacion = calif.puntuacion
             }
 
             if (pelicula.comentarios && pelicula.comentarios.length > 0) {
-                // Buscamos el comentario del dueño de la lista
-                const coment = pelicula.comentarios.find(c => c.usuario_id === lista.usuario_id);
-                if (coment) miComentario = coment.contenido;
+                const coment = pelicula.comentarios.find(c => c.usuario_id === lista.usuario_id)
+                if (coment) miComentario = coment.contenido
             }
 
             return {

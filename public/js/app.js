@@ -1,8 +1,6 @@
-// ===================== MOVIEAPP FRONTEND JS =====================
-
-// Manejar formularios con fetch (AJAX)
+// FRONTEND PRINCIPAL
 document.addEventListener('DOMContentLoaded', () => {
-    // ---------- Login ----------
+    // LOGIN
     const loginForm = document.getElementById('loginForm')
     if (loginForm) {
         loginForm.addEventListener('submit', async (e) => {
@@ -41,7 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    // ---------- Register ----------
+    // REGISTRO
     const registerForm = document.getElementById('registerForm')
     if (registerForm) {
         registerForm.addEventListener('submit', async (e) => {
@@ -81,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    // ---------- Crear Lista ----------
+    // CREAR LISTA
     const crearListaForm = document.getElementById('crearListaForm')
     if (crearListaForm) {
         crearListaForm.addEventListener('submit', async (e) => {
@@ -103,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (result.exito) {
                     showAlert('success', 'Lista creada, redirigiendo...')
                     setTimeout(() => {
-                        // Redirigir a la vista de la lista creada
                         window.location.href = `/listas/${result.datos.id}`
                     }, 500)
                 } else {
@@ -120,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
     }
 
-    // ---------- Auto‑search on /buscar page ----------
+    // BUSQUEDA AUTOMATICA
     if (window.location.pathname.includes('/buscar')) {
         const urlParams = new URLSearchParams(window.location.search)
         const q = urlParams.get('q') || ''
@@ -140,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 })
 
-// ---------- Helper: showAlert ----------
+// MOSTRAR ALERTA
 function showAlert(type, message) {
     const container = document.querySelector('.card-body') || document.querySelector('main') || document.querySelector('.container')
     if (!container) return
@@ -151,13 +148,12 @@ function showAlert(type, message) {
     alert.className = `alert alert-${type} fade-in mb-3`
     alert.innerHTML = `<i class="bi ${icon} me-2"></i>${message}`
 
-    // Insert at top of container
     container.insertBefore(alert, container.firstChild)
 
     if (type !== 'success') setTimeout(() => alert.remove(), 5000)
 }
 
-// ---------- API: buscarPeliculas ----------
+// BUSCAR PELICULAS API
 async function buscarPeliculas(query) {
     try {
         const response = await fetch(`/api/peliculas/buscar?q=${encodeURIComponent(query)}`, { credentials: 'same-origin' })
@@ -169,7 +165,7 @@ async function buscarPeliculas(query) {
     }
 }
 
-// ---------- Render results on /buscar ----------
+// RENDERIZAR RESULTADOS
 function renderResultados(peliculas) {
     const container = document.getElementById('resultados')
     if (!container) return
@@ -182,7 +178,6 @@ function renderResultados(peliculas) {
                         <img src="${posterSrc}" class="card-img-top" alt="${pelicula.titulo}"
                             onerror="this.src='${placeholderImg}'">
                         <div class="card-body d-flex flex-column">
-                            <!-- PARTE SUPERIOR: Título, Tag, Año, Rating -->
                             <div class="card-content-top">
                                 <h6 class="card-title-container mb-1">
                                     <span class="card-title-text" tabindex="0" data-bs-toggle="popover"
@@ -197,10 +192,8 @@ function renderResultados(peliculas) {
                                 </p>
                             </div>
 
-                            <!-- SEPARADOR -->
                             <div class="card-separator my-2"></div>
 
-                            <!-- PARTE INFERIOR: Botón grande -->
                             <div class="mt-auto">
                                 <button class="btn btn-card-action w-100 py-2"
                                     onclick="mostrarModalAgregar('${pelicula.imdb_id}', '${pelicula.titulo.replace(/'/g, "\\'")}')">
@@ -214,14 +207,12 @@ function renderResultados(peliculas) {
             `
     }).join('')
 
-    // Wrap in row with same classes as dashboard
     const wrapper = document.createElement('div')
     wrapper.className = 'row row-cols-2 row-cols-md-4 row-cols-lg-4 g-3'
     wrapper.innerHTML = container.innerHTML
     container.innerHTML = ''
     container.appendChild(wrapper)
 
-    // Inicializar popovers
     setTimeout(() => {
         var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
         var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
@@ -230,7 +221,7 @@ function renderResultados(peliculas) {
     }, 100)
 }
 
-// ---------- API: agregarALista (used by other pages) ----------
+// AGREGAR A LISTA API
 async function agregarALista(listaId, peliculaId) {
     try {
         const response = await fetch(`/api/listas/${listaId}/peliculas`, {
@@ -246,7 +237,7 @@ async function agregarALista(listaId, peliculaId) {
     }
 }
 
-// ---------- Modal para agregar películas a listas ----------
+// MODAL AGREGAR PELICULA A LISTA
 let peliculaSeleccionada = { imdb_id: '', titulo: '' }
 
 function mostrarModalAgregar(imdbId, titulo) {

@@ -1,0 +1,507 @@
+<div class="resena-fullscreen">
+    <div class="resena-container">
+        <!-- Header con logo -->
+        <div class="resena-header">
+            <h1 class="app-logo">🍿 CLUB PALOMITAS</h1>
+            <div class="header-line"></div>
+        </div>
+
+        <!-- Info película -->
+        <div class="movie-info">
+            <h2 class="movie-title">{{pelicula.titulo}}</h2>
+            <span class="movie-year">{{pelicula.anio}}</span>
+        </div>
+
+        <!-- Poster con borde -->
+        <div class="poster-container">
+            <img src="{{pelicula.poster}}" alt="{{pelicula.titulo}}" class="movie-poster"
+                onerror="this.src='https://via.placeholder.com/400x600?text=No+Image'">
+        </div>
+
+        <!-- Calificación -->
+        {{#if calificacion}}
+        <div class="rating-container">
+            {{#each (range 1 6)}}
+            <i class="bi bi-star{{#if (lte this ../calificacion)}}-fill{{/if}} star-icon"></i>
+            {{/each}}
+        </div>
+        {{/if}}
+
+        <!-- Comentario -->
+        {{#if comentario}}
+        <div class="comment-container">
+            <p class="comment-text">"{{comentario}}"</p>
+        </div>
+        {{/if}}
+
+        <!-- Usuario -->
+        <div class="user-info">
+            <span class="user-label">Reseña de</span>
+            <span class="username">@{{usuario.nombre}}</span>
+        </div>
+
+        <!-- Footer -->
+        <div class="resena-footer">
+            <div class="footer-line"></div>
+            <span class="watermark">clubpalomitas.app</span>
+        </div>
+    </div>
+
+    <!-- Botones de acción (solo visible en navegador) -->
+    <div class="share-actions">
+        <button class="btn btn-share btn-download" onclick="descargarImagen()">
+            <i class="bi bi-download me-2"></i>Descargar Imagen
+        </button>
+
+        <button class="btn btn-share btn-native-share" onclick="compartirNativo()" style="display: none;">
+            <i class="bi bi-share me-2"></i>Compartir
+        </button>
+
+        <button class="btn btn-share btn-whatsapp" onclick="compartirWhatsApp()">
+            <i class="bi bi-whatsapp me-2"></i>WhatsApp
+        </button>
+
+        <button class="btn btn-share btn-copy" onclick="copiarImagen()">
+            <i class="bi bi-clipboard me-2"></i>Copiar
+        </button>
+
+        <a href="/listas/{{listaId}}" class="btn btn-secondary mt-3">
+            <i class="bi bi-arrow-left me-2"></i>Volver a la lista
+        </a>
+    </div>
+</div>
+
+<style>
+    /* Reset para vista fullscreen */
+    body {
+        background: linear-gradient(180deg, #081f21 0%, #0d2e31 50%, #081f21 100%) !important;
+        min-height: 100vh;
+    }
+
+    .navbar,
+    footer {
+        display: none !important;
+    }
+
+    main {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    .resena-fullscreen {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+    }
+
+    .resena-container {
+        width: 100%;
+        max-width: 400px;
+        aspect-ratio: 9/16;
+        background: linear-gradient(180deg, #081f21 0%, #0d2e31 50%, #081f21 100%);
+        border-radius: 20px;
+        padding: 30px 25px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Decoraciones de fondo */
+    .resena-container::before {
+        content: '';
+        position: absolute;
+        top: 100px;
+        left: -50px;
+        width: 150px;
+        height: 150px;
+        background: #f471b5;
+        border-radius: 50%;
+        opacity: 0.1;
+    }
+
+    .resena-container::after {
+        content: '';
+        position: absolute;
+        bottom: 150px;
+        right: -80px;
+        width: 200px;
+        height: 200px;
+        background: #69dadc;
+        border-radius: 50%;
+        opacity: 0.1;
+    }
+
+    /* Header */
+    .resena-header {
+        text-align: center;
+        margin-bottom: 15px;
+        z-index: 1;
+    }
+
+    .app-logo {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #fae04c;
+        margin: 0;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-line {
+        width: 150px;
+        height: 3px;
+        background: #69dadc;
+        margin: 10px auto;
+        border-radius: 2px;
+    }
+
+    /* Info película */
+    .movie-info {
+        text-align: center;
+        margin-bottom: 15px;
+        z-index: 1;
+    }
+
+    .movie-title {
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #eefbfb;
+        margin: 0 0 5px 0;
+        line-height: 1.2;
+    }
+
+    .movie-year {
+        font-size: 1rem;
+        color: #69dadc;
+        font-weight: 600;
+    }
+
+    /* Poster */
+    .poster-container {
+        position: relative;
+        z-index: 1;
+        margin-bottom: 20px;
+    }
+
+    .movie-poster {
+        width: 200px;
+        height: 300px;
+        object-fit: cover;
+        border-radius: 15px;
+        border: 4px solid #fae04c;
+        box-shadow: 0 8px 25px rgba(244, 113, 181, 0.4);
+    }
+
+    /* Rating */
+    .rating-container {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+        z-index: 1;
+    }
+
+    .star-icon {
+        font-size: 2rem;
+        color: #4a5568;
+    }
+
+    .star-icon.bi-star-fill {
+        color: #fae04c;
+    }
+
+    /* Comentario */
+    .comment-container {
+        margin: 20px 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 0 15px;
+        z-index: 2;
+    }
+
+    .comment-text {
+        font-size: 1.1rem;
+        font-style: italic;
+        color: #eefbfb;
+        text-align: center;
+        line-height: 1.4;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Usuario */
+    .user-info {
+        text-align: center;
+        margin-top: auto;
+        padding-top: 15px;
+        z-index: 1;
+    }
+
+    .user-label {
+        display: block;
+        font-size: 0.9rem;
+        color: #69dadc;
+        margin-bottom: 5px;
+    }
+
+    .username {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #f471b5;
+    }
+
+    /* Footer */
+    .resena-footer {
+        text-align: center;
+        margin-top: 15px;
+        z-index: 1;
+    }
+
+    .footer-line {
+        width: 100px;
+        height: 2px;
+        background: #69dadc;
+        margin: 0 auto 10px;
+        opacity: 0.5;
+    }
+
+    .watermark {
+        font-size: 0.85rem;
+        color: #69dadc;
+        opacity: 0.7;
+    }
+
+    /* Botones de compartir */
+    .share-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 30px;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .btn-share {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 20px;
+        font-size: 1rem;
+        font-weight: 700;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-download {
+        background: #fae04c;
+        color: #081f21;
+    }
+
+    .btn-download:hover {
+        background: #f5d420;
+        transform: translateY(-2px);
+    }
+
+    .btn-native-share {
+        background: #69dadc;
+        color: #081f21;
+    }
+
+    .btn-native-share:hover {
+        background: #5bc8ca;
+    }
+
+    .btn-whatsapp {
+        background: #25D366;
+        color: white;
+    }
+
+    .btn-whatsapp:hover {
+        background: #20bd5a;
+    }
+
+    .btn-copy {
+        background: #f471b5;
+        color: #081f21;
+    }
+
+    .btn-copy:hover {
+        background: #e85aa5;
+    }
+
+    /* Responsive para móvil */
+    @media (max-width: 480px) {
+        .resena-container {
+            max-width: 100%;
+            border-radius: 0;
+            aspect-ratio: auto;
+            min-height: calc(100vh - 200px);
+        }
+
+        .movie-poster {
+            width: 180px;
+            height: 270px;
+        }
+
+        .app-logo {
+            font-size: 1.5rem;
+        }
+
+        .movie-title {
+            font-size: 1.2rem;
+        }
+    }
+
+    /* Para captura de pantalla */
+    @media print {
+        .share-actions {
+            display: none !important;
+        }
+    }
+</style>
+
+<script>
+    const peliculaId = {{ pelicula.id }};
+    const peliculaTitulo = "{{pelicula.titulo}}";
+
+    // Verificar soporte para Web Share API
+    document.addEventListener('DOMContentLoaded', function () {
+        if (navigator.share && navigator.canShare) {
+            document.querySelector('.btn-native-share').style.display = 'flex';
+        }
+    });
+
+    // Descargar imagen generada por el servidor
+    async function descargarImagen() {
+        const btn = document.querySelector('.btn-download');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Generando...';
+        btn.disabled = true;
+
+        try {
+            const response = await fetch(`/api/peliculas/${peliculaId}/share-image`, {
+                credentials: 'same-origin'
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al generar imagen');
+            }
+
+            const blob = await response.blob();
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `resena-${peliculaTitulo.replace(/[^a-zA-Z0-9]/g, '-')}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            btn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Descargado!';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 2000);
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al generar la imagen. Intenta de nuevo.');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // Compartir usando Web Share API
+    async function compartirNativo() {
+        try {
+            const response = await fetch(`/api/peliculas/${peliculaId}/share-image`, {
+                credentials: 'same-origin'
+            });
+
+            if (!response.ok) throw new Error('Error al generar imagen');
+
+            const blob = await response.blob();
+            const file = new File([blob], `resena-${peliculaTitulo}.png`, { type: 'image/png' });
+
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    title: `Mi reseña de ${peliculaTitulo}`,
+                    text: `Mira mi reseña de "${peliculaTitulo}" en Club Palomitas 🍿`,
+                    files: [file]
+                });
+            } else {
+                // Fallback: solo compartir texto
+                await navigator.share({
+                    title: `Mi reseña de ${peliculaTitulo}`,
+                    text: `Mira mi reseña de "${peliculaTitulo}" en Club Palomitas 🍿`,
+                    url: window.location.href
+                });
+            }
+        } catch (error) {
+            if (error.name !== 'AbortError') {
+                console.error('Error al compartir:', error);
+                alert('No se pudo compartir. Intenta descargar la imagen.');
+            }
+        }
+    }
+
+    // Compartir en WhatsApp
+    async function compartirWhatsApp() {
+        const texto = encodeURIComponent(`¡Mira mi reseña de "${peliculaTitulo}" en Club Palomitas! 🍿🎬`);
+
+        // En móvil, intentar abrir la app
+        if (/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            window.open(`whatsapp://send?text=${texto}`, '_blank');
+        } else {
+            // En desktop, abrir WhatsApp Web
+            window.open(`https://web.whatsapp.com/send?text=${texto}`, '_blank');
+        }
+
+        // Descargar imagen para que el usuario la comparta manualmente
+        descargarImagen();
+    }
+
+    // Copiar imagen al portapapeles
+    async function copiarImagen() {
+        const btn = document.querySelector('.btn-copy');
+        const originalText = btn.innerHTML;
+
+        try {
+            btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Copiando...';
+            btn.disabled = true;
+
+            const response = await fetch(`/api/peliculas/${peliculaId}/share-image`, {
+                credentials: 'same-origin'
+            });
+
+            if (!response.ok) throw new Error('Error al generar imagen');
+
+            const blob = await response.blob();
+
+            // Verificar soporte para Clipboard API con imágenes
+            if (navigator.clipboard && navigator.clipboard.write) {
+                const item = new ClipboardItem({ 'image/png': blob });
+                await navigator.clipboard.write([item]);
+                btn.innerHTML = '<i class="bi bi-check-lg me-2"></i>Copiado!';
+            } else {
+                throw new Error('Tu navegador no soporta copiar imágenes');
+            }
+
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 2000);
+        } catch (error) {
+            console.error('Error:', error);
+            alert('No se pudo copiar la imagen. Intenta descargarla.');
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+</script>

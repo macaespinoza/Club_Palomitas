@@ -1,4 +1,9 @@
-# 🎬 MovieApp - Gestor de Listas de Películas
+# BOOTCAMP FULL STACK JAVASCRIPT
+# MÓDULO 09 - EVALUACIÓN DE PORTAFOLIO 
+## ALUMNA: MACARENA ESPINOZA GATICA
+===================================================
+
+# 🍿🍿🍿 Club Palomitas - Gestor de Listas de Películas 🍿🍿🍿
 
 Aplicación web para gestionar listas personalizadas de películas favoritas. Permite buscar películas en tiempo real usando la API de OMDb, agregarlas a listas, calificarlas y dejar reseñas.
 
@@ -10,7 +15,7 @@ Aplicación web para gestionar listas personalizadas de películas favoritas. Pe
 - **Sistema de Reseñas y Calificaciones**:
     - Califica películas del 1 al 5 (estrellas).
     - Deja comentarios personales sobre cada película.
-- **Interfaz Moderna**: Diseño responsivo utilizando Bootstrap y temas oscuros.
+- **Interfaz Amigable**: Diseño responsivo utilizando Bootstrap, y estilo colorido personalizado desarrollado con CSS.
 - **Persistencia**: Base de datos PostgreSQL con Sequelize ORM.
 
 ## 🛠️ Tecnologías Utilizadas

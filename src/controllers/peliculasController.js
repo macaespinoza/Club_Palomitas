@@ -1,11 +1,9 @@
-const { Pelicula, Lista, ListaPelicula, Calificacion, Comentario } = require('../models/associations')
+const { Pelicula, Lista, ListaPelicula, Calificacion, Comentario, Usuario } = require('../models/associations')
 const servicioOMDb = require('../services/servicioOMDb')
 const { Op } = require('sequelize')
+const { generateShareImage } = require('../services/shareImageService')
 
-/**
- * GET /api/peliculas/buscar
- * Buscar películas en OMDb API
- */
+// BUSCAR PELICULAS EN OMDB
 exports.buscar = async (req, res, next) => {
     try {
         const { q, pagina = 1, tipo, anio } = req.query
@@ -40,10 +38,7 @@ exports.buscar = async (req, res, next) => {
     }
 }
 
-/**
- * GET /api/peliculas/omdb/:imdbId
- * Obtener detalles de una película desde OMDb API
- */
+// OBTENER PELICULA DE OMDB POR ID
 exports.obtenerDeOMDb = async (req, res, next) => {
     try {
         const { imdbId } = req.params
@@ -73,10 +68,7 @@ exports.obtenerDeOMDb = async (req, res, next) => {
     }
 }
 
-/**
- * POST /api/peliculas
- * Guardar una película de OMDb en nuestra base de datos
- */
+// GUARDAR PELICULA DE OMDB EN BD
 exports.guardarDeOMDb = async (req, res, next) => {
     try {
         const { imdb_id } = req.body
@@ -88,7 +80,6 @@ exports.guardarDeOMDb = async (req, res, next) => {
             })
         }
 
-        // Verificar si ya existe en nuestra BD
         let pelicula = await Pelicula.findOne({ where: { imdb_id } })
 
         if (pelicula) {
@@ -99,7 +90,6 @@ exports.guardarDeOMDb = async (req, res, next) => {
             })
         }
 
-        // Obtener datos de OMDb
         const resultado = await servicioOMDb.obtenerPeliculaPorId(imdb_id)
 
         if (!resultado.exito) {
@@ -109,7 +99,6 @@ exports.guardarDeOMDb = async (req, res, next) => {
             })
         }
 
-        // Guardar en nuestra BD
         pelicula = await Pelicula.create(resultado.pelicula)
 
         return res.status(201).json({
@@ -122,10 +111,7 @@ exports.guardarDeOMDb = async (req, res, next) => {
     }
 }
 
-/**
- * GET /api/peliculas
- * Obtener todas las películas guardadas en nuestra BD
- */
+// OBTENER TODAS LAS PELICULAS
 exports.obtenerTodas = async (req, res, next) => {
     try {
         const { pagina = 1, limite = 20, tipo, genero } = req.query
@@ -156,10 +142,7 @@ exports.obtenerTodas = async (req, res, next) => {
     }
 }
 
-/**
- * GET /api/peliculas/:id
- * Obtener una película específica por ID interno
- */
+// OBTENER UNA PELICULA
 exports.obtenerUna = async (req, res, next) => {
     try {
         const pelicula = await Pelicula.findByPk(req.params.id, {
@@ -189,10 +172,7 @@ exports.obtenerUna = async (req, res, next) => {
     }
 }
 
-/**
- * POST /api/peliculas/agregar-a-lista
- * Buscar película en OMDb, guardarla y agregarla a una lista en un solo paso
- */
+// BUSCAR Y AGREGAR A LISTA
 exports.buscarYAgregarALista = async (req, res, next) => {
     try {
         const { imdb_id, lista_id, notas } = req.body
@@ -204,7 +184,6 @@ exports.buscarYAgregarALista = async (req, res, next) => {
             })
         }
 
-        // Verificar que la lista pertenece al usuario
         const lista = await Lista.findByPk(lista_id)
 
         if (!lista) {
@@ -221,11 +200,9 @@ exports.buscarYAgregarALista = async (req, res, next) => {
             })
         }
 
-        // Buscar o crear la película
         let pelicula = await Pelicula.findOne({ where: { imdb_id } })
 
         if (!pelicula) {
-            // Obtener de OMDb
             const resultado = await servicioOMDb.obtenerPeliculaPorId(imdb_id)
 
             if (!resultado.exito) {
@@ -238,7 +215,6 @@ exports.buscarYAgregarALista = async (req, res, next) => {
             pelicula = await Pelicula.create(resultado.pelicula)
         }
 
-        // Verificar si ya está en la lista
         const existente = await ListaPelicula.findOne({
             where: { lista_id: lista.id, pelicula_id: pelicula.id }
         })
@@ -250,7 +226,6 @@ exports.buscarYAgregarALista = async (req, res, next) => {
             })
         }
 
-        // Agregar a la lista
         await ListaPelicula.create({
             lista_id: lista.id,
             pelicula_id: pelicula.id,
@@ -273,10 +248,7 @@ exports.buscarYAgregarALista = async (req, res, next) => {
     }
 }
 
-/**
- * GET /api/peliculas/populares
- * Obtener películas populares aleatorias para sugerencias
- */
+// OBTENER PELICULAS POPULARES
 exports.obtenerPopulares = async (req, res, next) => {
     try {
         const peliculas = await servicioOMDb.obtenerPeliculasPopulares()
@@ -289,17 +261,14 @@ exports.obtenerPopulares = async (req, res, next) => {
         next(error)
     }
 }
-/**
- * POST /api/peliculas/:id/review
- * Guardar o actualizar review (calificación y comentario) de una película
- */
+
+// GUARDAR REVIEW
 exports.guardarReview = async (req, res, next) => {
     try {
         const { id } = req.params
         const { calificacion, comentario } = req.body
         const usuario_id = req.auth.id
 
-        // Validar película
         const pelicula = await Pelicula.findByPk(id)
         if (!pelicula) {
             return res.status(404).json({
@@ -308,7 +277,6 @@ exports.guardarReview = async (req, res, next) => {
             })
         }
 
-        // Manejar Calificación
         if (calificacion) {
             if (calificacion < 1 || calificacion > 5) {
                 return res.status(400).json({
@@ -328,7 +296,6 @@ exports.guardarReview = async (req, res, next) => {
             }
         }
 
-        // Manejar Comentario
         if (comentario !== undefined) {
             const [comment, created] = await Comentario.findOrCreate({
                 where: { usuario_id, pelicula_id: id },
@@ -344,6 +311,115 @@ exports.guardarReview = async (req, res, next) => {
         return res.json({
             exito: true,
             mensaje: 'Review guardado exitosamente'
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+// GENERAR IMAGEN DE RESEÑA PARA COMPARTIR
+exports.generarImagenResena = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const usuario_id = req.auth.id
+
+        // Obtener película
+        const pelicula = await Pelicula.findByPk(id)
+        if (!pelicula) {
+            return res.status(404).json({
+                exito: false,
+                error: 'Película no encontrada'
+            })
+        }
+
+        // Obtener calificación del usuario
+        const calificacion = await Calificacion.findOne({
+            where: { usuario_id, pelicula_id: id }
+        })
+
+        // Obtener comentario del usuario
+        const comentario = await Comentario.findOne({
+            where: { usuario_id, pelicula_id: id }
+        })
+
+        // Obtener datos del usuario
+        const usuario = await Usuario.findByPk(usuario_id)
+
+        if (!calificacion && !comentario) {
+            return res.status(400).json({
+                exito: false,
+                error: 'No tienes una reseña para esta película'
+            })
+        }
+
+        // Generar imagen
+        const imageBuffer = await generateShareImage({
+            posterUrl: pelicula.poster,
+            rating: calificacion?.puntuacion || 0,
+            comment: comentario?.contenido || '',
+            movieTitle: pelicula.titulo,
+            movieYear: pelicula.anio,
+            username: usuario.nombre_usuario
+        })
+
+        // Responder con la imagen
+        res.set({
+            'Content-Type': 'image/png',
+            'Content-Disposition': `attachment; filename="resena-${pelicula.titulo.replace(/[^a-zA-Z0-9]/g, '-')}.png"`,
+            'Cache-Control': 'no-cache'
+        })
+
+        return res.send(imageBuffer)
+    } catch (error) {
+        console.error('Error generando imagen:', error)
+        next(error)
+    }
+}
+
+// OBTENER DATOS DE RESEÑA PARA COMPARTIR
+exports.obtenerDatosResena = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const usuario_id = req.auth.id
+
+        const pelicula = await Pelicula.findByPk(id)
+        if (!pelicula) {
+            return res.status(404).json({
+                exito: false,
+                error: 'Película no encontrada'
+            })
+        }
+
+        const calificacion = await Calificacion.findOne({
+            where: { usuario_id, pelicula_id: id }
+        })
+
+        const comentario = await Comentario.findOne({
+            where: { usuario_id, pelicula_id: id }
+        })
+
+        const usuario = await Usuario.findByPk(usuario_id, {
+            attributes: ['nombre_usuario', 'avatar_url']
+        })
+
+        return res.json({
+            exito: true,
+            datos: {
+                pelicula: {
+                    id: pelicula.id,
+                    titulo: pelicula.titulo,
+                    anio: pelicula.anio,
+                    poster: pelicula.poster,
+                    genero: pelicula.genero,
+                    director: pelicula.director
+                },
+                calificacion: calificacion?.puntuacion || null,
+                comentario: comentario?.contenido || null,
+                usuario: {
+                    nombre: usuario.nombre_usuario,
+                    avatar: usuario.avatar_url
+                }
+            }
         })
     } catch (error) {
         next(error)

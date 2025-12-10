@@ -31,9 +31,6 @@ const ListaPelicula = sequelize.define('lista_pelicula', {
         type: DataTypes.TEXT,
         allowNull: true
     }
-    // Simplification: Removing fields not present in initial SQL schema
-    // calificacion: { ... },
-    // comentario: { ... }
 }, {
     tableName: 'listas_peliculas',
     timestamps: false,
