@@ -1,7 +1,7 @@
 {{!-- src/views/listas/index.handlebars --}}
 <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="display-5">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+        <h1 class="display-5 mb-3 mb-md-0">
             <i class="bi bi-collection text-warning me-2"></i>Mis Listas
         </h1>
         <a href="/listas/nueva" class="btn btn-success">
@@ -28,7 +28,7 @@
 
             if (data.exito && data.datos.length > 0) {
                 container.innerHTML = `
-                <div class="row row-cols-2 row-cols-md-2 row-cols-lg-3 g-4">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 justify-content-center">
                     ${data.datos.map(lista => `
                         <div class="col">
                             <div class="card h-100 bg-dark border-secondary shadow-sm">
@@ -36,7 +36,7 @@
                                     <h5 class="card-title text-light">
                                         <i class="bi bi-collection-fill text-warning me-2"></i>${lista.nombre}
                                     </h5>
-                                    ${lista.descripcion ? `<p class="card-text text-muted">${lista.descripcion}</p>` : ''}
+                                    ${lista.descripcion ? `<p class="card-text" style="color: var(--azure-mist);">${lista.descripcion}</p>` : ''}
 
                                     <div class="mb-3">
                                         <span class="badge ${lista.es_publica ? 'bg-success' : 'bg-secondary'}">
@@ -50,7 +50,7 @@
                                     ${lista.peliculas && lista.peliculas.length > 0 ? `
                                         <div class="mb-3">
                                             <div class="d-flex flex-wrap gap-1">
-                                                ${lista.peliculas.slice(0, 4).map(pelicula => `
+                                                ${lista.peliculas.slice(0, 6).map(pelicula => `
                                                     <img src="${pelicula.poster}"
                                                         alt="${pelicula.titulo}"
                                                         class="rounded"
@@ -65,8 +65,8 @@
                                         <a href="/listas/${lista.id}" class="btn btn-primary flex-grow-1">
                                             <i class="bi bi-eye me-1"></i>Ver
                                         </a>
-                                        <button class="btn btn-outline-danger" onclick="eliminarLista(${lista.id}, '${lista.nombre.replace(/'/g, "\\'")}')">
-                                            <i class="bi bi-trash"></i>
+                                        <button class="btn" style="background-color: #dc3545; border-color: #dc3545; color: var(--ink-black);" onclick="eliminarLista(${lista.id}, '${lista.nombre.replace(/'/g, "\\'")}')">
+                                            <i class="bi bi-trash" style="color: var(--ink-black);"></i>
                                         </button>
                                     </div>
                                 </div>
