@@ -1,16 +1,14 @@
 <div class="container py-4">
-    <div class="d-flex justify-content-center align-items-center mb-4 position-relative">
-        <div class="text-center">
-            <h1 class="display-5 fw-bold">{{lista.nombre}}</h1>
-            {{#if lista.descripcion}}
-            <p class="text-muted lead fw-bold">{{lista.descripcion}}</p>
-            {{/if}}
-            <span class="badge {{#if lista.es_publica}}bg-success{{else}}bg-secondary{{/if}}">
-                {{#if lista.es_publica}}Pública{{else}}Privada{{/if}}
-            </span>
-        </div>
+    <div class="text-center mb-4">
+        <h1 class="display-5 fw-bold">{{lista.nombre}}</h1>
+        {{#if lista.descripcion}}
+        <p class="text-muted lead fw-bold">{{lista.descripcion}}</p>
+        {{/if}}
+        <span class="badge {{#if lista.es_publica}}bg-success{{else}}bg-secondary{{/if}} mb-3">
+            {{#if lista.es_publica}}Pública{{else}}Privada{{/if}}
+        </span>
         {{#if esPropietario}}
-        <div class="position-absolute end-0">
+        <div class="mt-3">
             <button class="btn btn-danger" onclick="eliminarLista({{lista.id}})">
                 <i class="bi bi-trash me-1"></i>Eliminar Lista
             </button>
@@ -178,12 +176,14 @@
                     </a>
 
                     <!-- Descargar imagen -->
-                    <button type="button" class="btn btn-share-option btn-download-share" onclick="descargarImagenCompartir()">
+                    <button type="button" class="btn btn-share-option btn-download-share"
+                        onclick="descargarImagenCompartir()">
                         <i class="bi bi-download me-2"></i>Descargar Imagen
                     </button>
 
                     <!-- Web Share API (solo si está disponible) -->
-                    <button type="button" class="btn btn-share-option btn-native" id="btnShareNativo" onclick="compartirNativo()" style="display: none;">
+                    <button type="button" class="btn btn-share-option btn-native" id="btnShareNativo"
+                        onclick="compartirNativo()" style="display: none;">
                         <i class="bi bi-share me-2"></i>Compartir...
                     </button>
 
@@ -664,7 +664,7 @@
     // ===== FUNCIONES DE COMPARTIR =====
 
     // Verificar soporte Web Share API al cargar
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         if (navigator.share) {
             document.getElementById('btnShareNativo').style.display = 'flex';
         }
