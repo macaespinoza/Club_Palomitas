@@ -1,6 +1,7 @@
 <div class="container py-4">
-    <div class="d-flex justify-content-center align-items-center mb-4 position-relative">
-        <div class="text-center">
+    <div class="row align-items-center mb-4">
+        <div class="col-md-2 d-none d-md-block"></div>
+        <div class="col-12 col-md-8 text-center">
             <h1 class="display-5 fw-bold">{{lista.nombre}}</h1>
             {{#if lista.descripcion}}
             <p class="text-muted lead fw-bold">{{lista.descripcion}}</p>
@@ -9,13 +10,13 @@
                 {{#if lista.es_publica}}Pública{{else}}Privada{{/if}}
             </span>
         </div>
-        {{#if esPropietario}}
-        <div class="position-absolute end-0">
-            <button class="btn btn-danger" onclick="eliminarLista({{lista.id}})">
+        <div class="col-12 col-md-2 text-center text-md-end mt-3 mt-md-0">
+            {{#if esPropietario}}
+            <button class="btn btn-danger w-100 w-md-auto" onclick="eliminarLista({{lista.id}})">
                 <i class="bi bi-trash me-1"></i>Eliminar Lista
             </button>
+            {{/if}}
         </div>
-        {{/if}}
     </div>
 
     {{#if esPropietario}}
@@ -83,19 +84,23 @@
 
                         {{#if ../esPropietario}}
                         <div class="d-flex justify-content-center gap-2 card-actions-buttons pt-2">
-                            <button class="btn btn-sm btn-card-action btn-comment-action" data-id="{{this.id}}"
-                                data-titulo="{{this.titulo}}" data-calificacion="{{this.mi_calificacion}}"
-                                data-comentario="{{this.mi_comentario}}" title="Comentario">
-                                <i class="bi bi-chat-left-text-fill"></i>
+                            <button class="btn btn-sm btn-card-action btn-icon-only btn-comment-action"
+                                data-id="{{this.id}}" data-titulo="{{this.titulo}}"
+                                data-calificacion="{{this.mi_calificacion}}" data-comentario="{{this.mi_comentario}}"
+                                title="Comentario">
+                                <i class="bi bi-chat-left-text-fill"
+                                    style="display: inline-block !important; color: var(--azure-mist) !important; font-size: 1.1rem !important; visibility: visible !important;"></i>
                             </button>
-                            <button class="btn btn-sm btn-card-action btn-review" data-id="{{this.id}}"
+                            <button class="btn btn-sm btn-card-action btn-icon-only btn-review" data-id="{{this.id}}"
                                 data-titulo="{{this.titulo}}" data-calificacion="{{this.mi_calificacion}}"
                                 data-comentario="{{this.mi_comentario}}" title="Calificación">
-                                <i class="bi bi-star-fill"></i>
+                                <i class="bi bi-star-fill"
+                                    style="display: inline-block !important; color: var(--azure-mist) !important; font-size: 1.1rem !important; visibility: visible !important;"></i>
                             </button>
-                            <button class="btn btn-sm btn-card-action btn-delete-action"
+                            <button class="btn btn-sm btn-card-action btn-icon-only btn-delete-action"
                                 onclick="removerPelicula({{../lista.id}}, {{this.id}})" title="Eliminar">
-                                <i class="bi bi-trash-fill"></i>
+                                <i class="bi bi-trash-fill"
+                                    style="display: inline-block !important; color: var(--azure-mist) !important; font-size: 1.1rem !important; visibility: visible !important;"></i>
                             </button>
                         </div>
                         {{/if}}
@@ -243,6 +248,15 @@
         border-radius: 10px;
         padding: 0.4rem 0.6rem;
         transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-icon-only {
+        width: 38px !important;
+        height: 38px !important;
+        padding: 0 !important;
     }
 
     .btn-card-action:hover {
@@ -252,13 +266,40 @@
         box-shadow: 3px 3px 0px var(--ink-black, #081f21);
     }
 
+    .btn-card-action:hover i {
+        color: var(--ink-black, #081f21) !important;
+        transform: scale(1.1);
+    }
+
     .btn-card-action i {
-        font-size: 1rem;
+        font-size: 1.1rem !important;
+        color: var(--azure-mist, #eefbfb) !important;
+        line-height: 1;
+        display: block !important;
     }
 
     .card-separator {
         border-top: 2px dashed rgba(8, 31, 33, 0.2);
         width: 100%;
+    }
+
+    /* Force visibility and correct styling on mobile for icon-only buttons */
+    @media (max-width: 768px) {
+        .btn-icon-only {
+            width: 38px !important;
+            height: 38px !important;
+            padding: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+
+        .btn-icon-only i {
+            display: block !important;
+            font-size: 1.2rem !important;
+            color: var(--azure-mist, #eefbfb) !important;
+            margin: 0 !important;
+        }
     }
 
     .card-content-bottom {
@@ -286,6 +327,27 @@
     .popover-arrow::before,
     .popover-arrow::after {
         border-top-color: var(--ink-black, #081f21) !important;
+    }
+
+    /* SUPER AGGRESSIVE OVERRIDE FOR MOBILE ICONS */
+    .btn-card-action.btn-icon-only i {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        font-size: 1.2rem !important;
+        color: var(--azure-mist, #eefbfb) !important;
+        line-height: 1 !important;
+        width: auto !important;
+        height: auto !important;
+    }
+
+    button.btn-card-action.btn-icon-only {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
+        width: 40px !important;
+        height: 40px !important;
     }
 </style>
 

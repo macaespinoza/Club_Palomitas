@@ -290,6 +290,14 @@ input[type="text"] {
     box-shadow: 0 4px 0px rgba(0, 0, 0, 0.2);
 }
 
+.navbar-toggler {
+    color: var(--ink-black) !important;
+}
+
+.navbar-toggler-icon {
+    filter: invert(1) !important;
+}
+
 .navbar-brand {
     font-size: 2rem;
     color: var(--ink-black) !important;
@@ -493,7 +501,7 @@ footer {
     }
 
     /* Specific fix for card action buttons to prevent vertical letter stacking */
-    .btn-card-action {
+    .btn-card-action:not(.btn-icon-only) {
         font-size: 0.75rem !important;
         /* Smaller to fit on one line */
         padding: 6px 2px !important;
@@ -506,7 +514,7 @@ footer {
         /* Prevent wrapping */
     }
 
-    .btn-card-action i {
+    .btn-card-action:not(.btn-icon-only) i {
         display: none !important;
     }
 
