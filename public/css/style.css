@@ -38,7 +38,6 @@ h5,
 h6 {
     color: var(--royal-gold);
     font-weight: 800;
-
 }
 
 a {
@@ -178,12 +177,11 @@ a {
 
 .search-card i {
     color: var(--azure-mist);
-
 }
 
 input[type="text"] {
-    background-color: var(--royal-gold);
-    color: var(--ink-black);
+    background-color: var(--azure-mist) !important;
+    color: var(--ink-black) !important;
     border: 3px solid var(--royal-gold);
     padding: 5px 15px;
     font-size: 1.5rem;
@@ -286,7 +284,7 @@ input[type="text"] {
 }
 
 .navbar-toggler-icon {
-    filter: invert(1) !important;
+    filter: none !important;
 }
 
 /* CUSTOM HAMBURGER ICON COLOR */
@@ -546,11 +544,300 @@ footer {
     /* Movie Cards specifically */
     .movie-card .card-img-top {
         height: 180px !important;
-        /* Shorter for better fit in 2 columns */
     }
 
     .card-title-container {
         font-size: 1rem !important;
         height: auto;
+    }
+}
+
+/* ========================================
+   MOVIE CARDS - ESTILOS CONSOLIDADOS
+   ======================================== */
+
+.movie-card .card-img-top {
+    height: 300px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.card-title-container {
+    color: var(--ink-black);
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    margin: 0;
+    height: 2.6em;
+    line-height: 1.3em;
+}
+
+.card-title-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    word-break: break-word;
+}
+
+.badge-tipo {
+    background-color: var(--pearl-aqua);
+    color: var(--ink-black);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.badge-sin-calificar {
+    background-color: rgba(8, 31, 33, 0.15);
+    color: var(--ink-black);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    border: 1px dashed rgba(8, 31, 33, 0.4);
+}
+
+.text-ink-black {
+    color: var(--ink-black);
+}
+
+.card-separator {
+    border-top: 2px dashed rgba(8, 31, 33, 0.2);
+    width: 100%;
+}
+
+/* BOTONES DE ACCION EN CARDS */
+.btn-card-action {
+    background-color: var(--ink-black) !important;
+    color: var(--azure-mist) !important;
+    border: 2px solid var(--ink-black) !important;
+    border-radius: 10px;
+    padding: 0.4rem 0.6rem;
+    transition: all 0.2s ease;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-card-action:hover {
+    background-color: var(--royal-gold) !important;
+    color: var(--ink-black) !important;
+    transform: translateY(-2px);
+    box-shadow: 3px 3px 0px var(--ink-black);
+}
+
+.btn-card-action:hover i {
+    color: var(--ink-black) !important;
+    transform: scale(1.1);
+}
+
+.btn-card-action i {
+    font-size: 1.1rem !important;
+    color: var(--azure-mist) !important;
+    line-height: 1;
+    display: block !important;
+}
+
+.btn-icon-only {
+    width: 38px !important;
+    height: 38px !important;
+    padding: 0 !important;
+}
+
+.btn-card-action.btn-icon-only i {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-size: 1.2rem !important;
+    color: var(--azure-mist) !important;
+    line-height: 1 !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+button.btn-card-action.btn-icon-only {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    width: 40px !important;
+    height: 40px !important;
+}
+
+/* REVIEW Y COMENTARIOS */
+.review-preview-container {
+    padding: 6px 8px;
+    background: rgba(8, 31, 33, 0.1);
+    border-radius: 8px;
+    border-left: 3px solid #ffc107;
+    height: 3.6em;
+    display: flex;
+    align-items: flex-start;
+}
+
+.comment-preview-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: rgba(8, 31, 33, 0.85);
+    cursor: pointer;
+    word-break: break-word;
+    line-height: 1.4em;
+}
+
+.comment-preview-text:hover {
+    color: var(--ink-black);
+}
+
+.card-content-bottom {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-actions-buttons {
+    border-top: none;
+}
+
+/* ESTRELLAS RATING */
+.stars-rating i {
+    font-size: 2rem;
+    color: #6c757d;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.stars-rating i:hover,
+.stars-rating i.active {
+    color: #ffc107;
+}
+
+.stars-display i {
+    font-size: 1rem;
+    color: #6c757d;
+}
+
+.stars-display i.bi-star-fill {
+    color: #ffc107;
+}
+
+/* POPOVERS PERSONALIZADOS */
+.popover {
+    background-color: var(--ink-black);
+    border: 2px solid var(--royal-gold);
+    border-radius: 12px;
+    box-shadow: 4px 4px 0px var(--pearl-aqua);
+}
+
+.popover-body {
+    color: var(--azure-mist);
+    font-style: italic;
+    padding: 0.75rem 1rem;
+}
+
+.popover-arrow::before,
+.popover-arrow::after {
+    border-top-color: var(--ink-black) !important;
+}
+
+/* RESPONSIVE - MOBILE CARDS */
+@media (max-width: 768px) {
+    .btn-icon-only {
+        width: 38px !important;
+        height: 38px !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .btn-icon-only i {
+        display: block !important;
+        font-size: 1.2rem !important;
+        color: var(--azure-mist) !important;
+        margin: 0 !important;
+    }
+}
+
+/* ========================================
+   AUTH VIEWS (LOGIN/REGISTER) 
+   ======================================== */
+
+.auth-card {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.auth-card .form-label {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--ink-black);
+    margin-bottom: 0.5rem;
+}
+
+.auth-card .form-control {
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.85rem 1.25rem;
+}
+
+.auth-card h2 {
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+.auth-card .text-muted {
+    font-size: 1.05rem;
+    font-weight: 600;
+}
+
+.auth-card p {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.auth-card a {
+    font-weight: 700;
+}
+
+.auth-card .btn {
+    font-size: 1.1rem;
+    font-weight: 700;
+    padding: 0.75rem 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .auth-card {
+        max-width: 85%;
+        margin: 0 auto;
+    }
+
+    .auth-card h2 {
+        font-size: 1.8rem !important;
+    }
+
+    .auth-card .form-label {
+        font-size: 1rem;
+    }
+
+    .auth-card .form-control {
+        font-size: 1rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .auth-card .btn {
+        font-size: 1rem;
     }
 }
