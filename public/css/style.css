@@ -514,42 +514,43 @@ footer {
         display: flex !important;
         font-size: 0.85rem !important;
         color: var(--azure-mist) !important;
-
-        .btn-card-action:not(.btn-icon-only) i {
-            display: none !important;
-        }
-
-        /* Reduced Padding for containers */
-        .container {
-            padding-left: 10px !important;
-            padding-right: 10px !important;
-        }
-
-        .card-body {
-            padding: 0.8rem !important;
-            /* Tighter padding */
-        }
-
-        .row.g-4 {
-            --bs-gutter-x: 0.5rem;
-            --bs-gutter-y: 0.5rem;
-        }
-
-        /* Adjust specific components for mobile compactness/layout */
-        .navbar-brand {
-            font-size: 1.5rem;
-            /* Smaller branding */
-            margin-right: 0 !important;
-        }
-
-        /* Movie Cards specifically */
-        .movie-card .card-img-top {
-            height: 180px !important;
-            /* Shorter for better fit in 2 columns */
-        }
-
-        .card-title-container {
-            font-size: 1rem !important;
-            height: auto;
-        }
     }
+
+    .btn-card-action:not(.btn-icon-only) i {
+        display: none !important;
+    }
+
+    /* Reduced Padding for containers */
+    .container {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    .card-body {
+        padding: 0.8rem !important;
+        /* Tighter padding */
+    }
+
+    .row.g-4 {
+        --bs-gutter-x: 0.5rem;
+        --bs-gutter-y: 0.5rem;
+    }
+
+    /* Adjust specific components for mobile compactness/layout */
+    .navbar-brand {
+        font-size: 1.5rem;
+        /* Smaller branding */
+        margin-right: 0 !important;
+    }
+
+    /* Movie Cards specifically */
+    .movie-card .card-img-top {
+        height: 180px !important;
+        /* Shorter for better fit in 2 columns */
+    }
+
+    .card-title-container {
+        font-size: 1rem !important;
+        height: auto;
+    }
+}
