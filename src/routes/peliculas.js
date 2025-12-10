@@ -15,4 +15,8 @@ enrutador.post('/', requiereAuth, peliculasController.guardarDeOMDb)
 enrutador.post('/agregar-a-lista', requiereAuth, peliculasController.buscarYAgregarALista)
 enrutador.post('/:id/review', requiereAuth, peliculasController.guardarReview)
 
+// RUTAS PARA COMPARTIR RESEÑAS
+enrutador.get('/:id/share-image', requiereAuth, peliculasController.generarImagenResena)
+enrutador.get('/:id/share-data', requiereAuth, peliculasController.obtenerDatosResena)
+
 module.exports = enrutador

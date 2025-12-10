@@ -1,6 +1,7 @@
-const { Pelicula, Lista, ListaPelicula, Calificacion, Comentario } = require('../models/associations')
+const { Pelicula, Lista, ListaPelicula, Calificacion, Comentario, Usuario } = require('../models/associations')
 const servicioOMDb = require('../services/servicioOMDb')
 const { Op } = require('sequelize')
+const { generateShareImage } = require('../services/shareImageService')
 
 // BUSCAR PELICULAS EN OMDB
 exports.buscar = async (req, res, next) => {
@@ -310,6 +311,115 @@ exports.guardarReview = async (req, res, next) => {
         return res.json({
             exito: true,
             mensaje: 'Review guardado exitosamente'
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+// GENERAR IMAGEN DE RESEÑA PARA COMPARTIR
+exports.generarImagenResena = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const usuario_id = req.auth.id
+
+        // Obtener película
+        const pelicula = await Pelicula.findByPk(id)
+        if (!pelicula) {
+            return res.status(404).json({
+                exito: false,
+                error: 'Película no encontrada'
+            })
+        }
+
+        // Obtener calificación del usuario
+        const calificacion = await Calificacion.findOne({
+            where: { usuario_id, pelicula_id: id }
+        })
+
+        // Obtener comentario del usuario
+        const comentario = await Comentario.findOne({
+            where: { usuario_id, pelicula_id: id }
+        })
+
+        // Obtener datos del usuario
+        const usuario = await Usuario.findByPk(usuario_id)
+
+        if (!calificacion && !comentario) {
+            return res.status(400).json({
+                exito: false,
+                error: 'No tienes una reseña para esta película'
+            })
+        }
+
+        // Generar imagen
+        const imageBuffer = await generateShareImage({
+            posterUrl: pelicula.poster,
+            rating: calificacion?.puntuacion || 0,
+            comment: comentario?.contenido || '',
+            movieTitle: pelicula.titulo,
+            movieYear: pelicula.anio,
+            username: usuario.nombre_usuario
+        })
+
+        // Responder con la imagen
+        res.set({
+            'Content-Type': 'image/png',
+            'Content-Disposition': `attachment; filename="resena-${pelicula.titulo.replace(/[^a-zA-Z0-9]/g, '-')}.png"`,
+            'Cache-Control': 'no-cache'
+        })
+
+        return res.send(imageBuffer)
+    } catch (error) {
+        console.error('Error generando imagen:', error)
+        next(error)
+    }
+}
+
+// OBTENER DATOS DE RESEÑA PARA COMPARTIR
+exports.obtenerDatosResena = async (req, res, next) => {
+    try {
+        const { id } = req.params
+        const usuario_id = req.auth.id
+
+        const pelicula = await Pelicula.findByPk(id)
+        if (!pelicula) {
+            return res.status(404).json({
+                exito: false,
+                error: 'Película no encontrada'
+            })
+        }
+
+        const calificacion = await Calificacion.findOne({
+            where: { usuario_id, pelicula_id: id }
+        })
+
+        const comentario = await Comentario.findOne({
+            where: { usuario_id, pelicula_id: id }
+        })
+
+        const usuario = await Usuario.findByPk(usuario_id, {
+            attributes: ['nombre_usuario', 'avatar_url']
+        })
+
+        return res.json({
+            exito: true,
+            datos: {
+                pelicula: {
+                    id: pelicula.id,
+                    titulo: pelicula.titulo,
+                    anio: pelicula.anio,
+                    poster: pelicula.poster,
+                    genero: pelicula.genero,
+                    director: pelicula.director
+                },
+                calificacion: calificacion?.puntuacion || null,
+                comentario: comentario?.contenido || null,
+                usuario: {
+                    nombre: usuario.nombre_usuario,
+                    avatar: usuario.avatar_url
+                }
+            }
         })
     } catch (error) {
         next(error)
