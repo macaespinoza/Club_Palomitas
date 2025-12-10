@@ -139,7 +139,9 @@ async function generateShareImage({
         .toBuffer()
 
     // Preparar texto del comentario
+    console.log('Comentario recibido:', comment)
     const commentLines = comment ? wrapText(comment, 38) : []
+    console.log('Líneas de comentario:', commentLines)
     const maxCommentLines = 6
     const displayLines = commentLines.slice(0, maxCommentLines)
     if (commentLines.length > maxCommentLines) {
@@ -153,65 +155,69 @@ async function generateShareImage({
     const commentY = starsY + 100
     const lineHeight = 42
 
+    // Generar el SVG del comentario por separado
+    let commentSvg = ''
+    if (displayLines.length > 0) {
+        for (let i = 0; i < displayLines.length; i++) {
+            const line = displayLines[i]
+            const isFirst = i === 0
+            const isLast = i === displayLines.length - 1
+            const openQuote = isFirst ? '"' : ''
+            const closeQuote = isLast ? '"' : ''
+            const yPos = commentY + (i * lineHeight)
+            commentSvg += `<text x="${WIDTH / 2}" y="${yPos}" font-family="Arial, sans-serif" font-size="32" fill="${COLORS.azureMist}" text-anchor="middle" font-style="italic">${openQuote}${escapeXml(line)}${closeQuote}</text>\n`
+        }
+    }
+    console.log('SVG del comentario generado:', commentSvg)
+
     // Crear el SVG del texto y elementos
-    const svgContent = `
-        <svg width="${WIDTH}" height="${HEIGHT}" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <style>
-                    @import url('https://fonts.googleapis.com/css2?family=Dosis:wght@600;800&amp;display=swap');
-                </style>
-                <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" style="stop-color:${COLORS.inkBlack};stop-opacity:1" />
-                    <stop offset="50%" style="stop-color:#0d2e31;stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:${COLORS.inkBlack};stop-opacity:1" />
-                </linearGradient>
-                <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="${COLORS.hotPinkWeb}" flood-opacity="0.5"/>
-                </filter>
-            </defs>
+    const svgContent = `<svg width="${WIDTH}" height="${HEIGHT}" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="bgGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" style="stop-color:${COLORS.inkBlack};stop-opacity:1" />
+            <stop offset="50%" style="stop-color:#0d2e31;stop-opacity:1" />
+            <stop offset="100%" style="stop-color:${COLORS.inkBlack};stop-opacity:1" />
+        </linearGradient>
+        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="${COLORS.hotPinkWeb}" flood-opacity="0.5"/>
+        </filter>
+    </defs>
 
-            <!-- Fondo -->
-            <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#bgGradient)"/>
+    <!-- Fondo -->
+    <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#bgGradient)"/>
 
-            <!-- Decoraciones -->
-            <circle cx="100" cy="200" r="150" fill="${COLORS.hotPinkWeb}" opacity="0.1"/>
-            <circle cx="${WIDTH - 100}" cy="${HEIGHT - 300}" r="200" fill="${COLORS.pearlAqua}" opacity="0.1"/>
+    <!-- Decoraciones -->
+    <circle cx="100" cy="200" r="150" fill="${COLORS.hotPinkWeb}" opacity="0.1"/>
+    <circle cx="${WIDTH - 100}" cy="${HEIGHT - 300}" r="200" fill="${COLORS.pearlAqua}" opacity="0.1"/>
 
-            <!-- Logo/Título de la app -->
-            <text x="${WIDTH / 2}" y="100" font-family="Dosis, sans-serif" font-size="48" font-weight="800" fill="${COLORS.royalGold}" text-anchor="middle">🍿 CLUB PALOMITAS</text>
+    <!-- Logo/Título de la app -->
+    <text x="${WIDTH / 2}" y="100" font-family="Arial, sans-serif" font-size="48" font-weight="800" fill="${COLORS.royalGold}" text-anchor="middle">CLUB PALOMITAS</text>
 
-            <!-- Línea decorativa -->
-            <line x1="${WIDTH / 2 - 150}" y1="130" x2="${WIDTH / 2 + 150}" y2="130" stroke="${COLORS.pearlAqua}" stroke-width="3"/>
+    <!-- Línea decorativa -->
+    <line x1="${WIDTH / 2 - 150}" y1="130" x2="${WIDTH / 2 + 150}" y2="130" stroke="${COLORS.pearlAqua}" stroke-width="3"/>
 
-            <!-- Título película -->
-            <text x="${WIDTH / 2}" y="200" font-family="Dosis, sans-serif" font-size="38" font-weight="800" fill="${COLORS.azureMist}" text-anchor="middle">${escapeXml(movieTitle.length > 30 ? movieTitle.substring(0, 30) + '...' : movieTitle)}</text>
-            <text x="${WIDTH / 2}" y="240" font-family="Dosis, sans-serif" font-size="24" fill="${COLORS.pearlAqua}" text-anchor="middle">${movieYear}</text>
+    <!-- Título película -->
+    <text x="${WIDTH / 2}" y="200" font-family="Arial, sans-serif" font-size="38" font-weight="800" fill="${COLORS.azureMist}" text-anchor="middle">${escapeXml(movieTitle.length > 30 ? movieTitle.substring(0, 30) + '...' : movieTitle)}</text>
+    <text x="${WIDTH / 2}" y="240" font-family="Arial, sans-serif" font-size="24" fill="${COLORS.pearlAqua}" text-anchor="middle">${movieYear}</text>
 
-            <!-- Borde del poster -->
-            <rect x="${posterX - 8}" y="${posterY - 8}" width="${posterWidth + 16}" height="${posterHeight + 16}" rx="24" ry="24" fill="none" stroke="${COLORS.royalGold}" stroke-width="4" filter="url(#shadow)"/>
+    <!-- Borde del poster -->
+    <rect x="${posterX - 8}" y="${posterY - 8}" width="${posterWidth + 16}" height="${posterHeight + 16}" rx="24" ry="24" fill="none" stroke="${COLORS.royalGold}" stroke-width="4" filter="url(#shadow)"/>
 
-            <!-- Estrellas -->
-            ${generateStarsInline(rating, starsY)}
+    <!-- Estrellas -->
+    ${generateStarsInline(rating, starsY)}
 
-            <!-- Comentario -->
-            ${displayLines.length > 0 ? displayLines.map((line, i) => {
-                const isFirst = i === 0
-                const isLast = i === displayLines.length - 1
-                const openQuote = isFirst ? '"' : ''
-                const closeQuote = isLast ? '"' : ''
-                return `<text x="${WIDTH / 2}" y="${commentY + (i * lineHeight)}" font-family="Dosis, sans-serif" font-size="32" fill="${COLORS.azureMist}" text-anchor="middle" font-style="italic">${openQuote}${escapeXml(line)}${closeQuote}</text>`
-            }).join('\n            ') : ''}
+    <!-- Comentario -->
+    ${commentSvg}
 
-            <!-- Usuario -->
-            <text x="${WIDTH / 2}" y="${HEIGHT - 150}" font-family="Dosis, sans-serif" font-size="28" fill="${COLORS.hotPinkWeb}" text-anchor="middle">Reseña de @${escapeXml(username)}</text>
+    <!-- Usuario -->
+    <text x="${WIDTH / 2}" y="${HEIGHT - 150}" font-family="Arial, sans-serif" font-size="28" fill="${COLORS.hotPinkWeb}" text-anchor="middle">Resena de @${escapeXml(username)}</text>
 
-            <!-- Línea inferior -->
-            <line x1="${WIDTH / 2 - 100}" y1="${HEIGHT - 100}" x2="${WIDTH / 2 + 100}" y2="${HEIGHT - 100}" stroke="${COLORS.pearlAqua}" stroke-width="2"/>
+    <!-- Línea inferior -->
+    <line x1="${WIDTH / 2 - 100}" y1="${HEIGHT - 100}" x2="${WIDTH / 2 + 100}" y2="${HEIGHT - 100}" stroke="${COLORS.pearlAqua}" stroke-width="2"/>
 
-            <!-- Watermark -->
-            <text x="${WIDTH / 2}" y="${HEIGHT - 60}" font-family="Dosis, sans-serif" font-size="20" fill="${COLORS.pearlAqua}" text-anchor="middle" opacity="0.7">clubpalomitas.app</text>
-        </svg>
-    `
+    <!-- Watermark -->
+    <text x="${WIDTH / 2}" y="${HEIGHT - 60}" font-family="Arial, sans-serif" font-size="20" fill="${COLORS.pearlAqua}" text-anchor="middle" opacity="0.7">clubpalomitas.app</text>
+</svg>`
 
     // Crear imagen base con el SVG
     const baseImage = await sharp(Buffer.from(svgContent))
