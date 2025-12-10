@@ -13,8 +13,9 @@
     </h1>
 </div>
 
-<div class="row g-4 mb-5">
-    <div class="col-md-6 col-lg-4">
+<div class="row g-4 mb-5 justify-content-center">
+    <!-- Buscar películas -->
+    <div class="col-6 col-md-6 col-lg-4">
         <div class="card h-100">
             <div class="card-body text-center p-4">
                 <svg class="dashboard-icon-large" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -45,7 +46,8 @@
         </div>
     </div>
 
-    <div class="col-md-6 col-lg-4">
+    <!-- Mis listas -->
+    <div class="col-6 col-md-6 col-lg-4">
         <div class="card h-100">
             <div class="card-body text-center p-4">
                 <svg class="dashboard-icon-large" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -76,7 +78,8 @@
         </div>
     </div>
 
-    <div class="col-md-6 col-lg-4">
+    <!-- Crear lista -->
+    <div class="col-6 col-md-6 col-lg-4">
         <div class="card h-100">
             <div class="card-body text-center p-4">
                 <svg class="dashboard-icon-large" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
@@ -168,7 +171,7 @@
                             <div class="mt-auto">
                                 <button class="btn btn-card-action w-100 py-2"
                                     onclick="mostrarModalAgregar('${pelicula.imdb_id}', '${pelicula.titulo.replace(/'/g, "\\'")}')">
-                                    <i class="bi bi-plus-circle-fill me-2" style="font-size: 1.2rem;"></i>
+                                    <i class="bi bi-plus-circle-fill me-1" style="font-size: 1rem;"></i>
                                     Agregar a una lista
                                 </button>
                             </div>
@@ -325,7 +328,13 @@
         border-radius: 10px;
         padding: 0.4rem 0.6rem;
         transition: all 0.2s ease;
-        font-weight: 600;
+        font-weight: 700;
+        font-size: 0.75rem;
+        /* Text smaller to fit in one line */
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .btn-card-action:hover {
